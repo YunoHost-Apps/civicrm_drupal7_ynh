@@ -1,0 +1,226 @@
+#!/bin/bash
+
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
+
+source _common.sh
+source ynh_add_extra_apt_repos__3
+source ynh_install_php__3
+source ynh_composer__2
+source /usr/share/yunohost/helpers
+
+#=================================================
+# MANAGE SCRIPT FAILURE
+#=================================================
+
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# RETRIEVE ARGUMENTS FROM THE MANIFEST
+#=================================================
+
+domain=$YNH_APP_ARG_DOMAIN
+path_url=$YNH_APP_ARG_PATH
+admin=$YNH_APP_ARG_ADMIN
+is_public=$YNH_APP_ARG_IS_PUBLIC
+language=$YNH_APP_ARG_LANGUAGE
+password=$YNH_APP_ARG_PASSWORD
+install_profil=$YNH_APP_ARG_INSTALL_PROFIL
+
+admin_mail=$(ynh_user_get_info $admin 'mail')
+
+app=$YNH_APP_INSTANCE_NAME
+
+#=================================================
+# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
+#=================================================
+ynh_print_info --message="Validating installation parameters..."
+
+final_path=/var/www/$app
+test ! -e "$final_path" || ynh_die "This path already contains a folder"
+
+# Register (book) web path
+ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
+
+#=================================================
+# STORE SETTINGS FROM MANIFEST
+#=================================================
+ynh_print_info --message="Storing installation settings..."
+
+ynh_app_setting_set --app=$app --key=domain --value=$domain
+ynh_app_setting_set --app=$app --key=path --value=$path_url
+ynh_app_setting_set --app=$app --key=admin --value=$admin
+ynh_app_setting_set --app=$app --key=is_public --value=$is_public
+ynh_app_setting_set --app=$app --key=language --value=$language
+ynh_app_setting_set --app=$app --key=install_profil --value=$install_profil
+
+#=================================================
+# STANDARD MODIFICATIONS
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+ynh_print_info --message="Installing dependencies..."
+
+ynh_install_app_dependencies $pkg_dependencies
+ynh_install_php --phpversion="7.2" --package="$extra_pkg_dependencies"
+
+#=================================================
+# CREATE A MYSQL DATABASE
+#=================================================
+ynh_print_info --message="Creating a MySQL database..."
+
+db_name=$(ynh_sanitize_dbid $app)
+db_user=$db_name
+ynh_app_setting_set --app=$app --key=db_name --value=$db_name
+ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+ynh_print_info --message="Setting up source files..."
+
+ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+# Download, check integrity, uncompress and patch the source from app.src
+
+mkdir -p "$final_path"
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+ynh_print_info --message="Configuring nginx web server..."
+
+# Create a dedicated nginx config
+ynh_add_nginx_config
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_print_info --message="Configuring system user..."
+
+# Create a system user
+ynh_system_user_create --username=$app --home_dir="$final_path"
+
+#=================================================
+# SPECIFIC SETUP
+#=================================================
+# CREATE DRUSH ALIAS
+#=================================================
+ynh_print_info --message="Creating Drush alias..."
+
+mkdir -p "$final_path/.drush"
+
+cp -f "../conf/yoursite.aliases.drushrc.php" "$final_path/.drush/$app.aliases.drushrc.php"
+
+ynh_replace_string "__FINALPATH__" "$final_path" "$final_path/.drush/$app.aliases.drushrc.php"
+ynh_replace_string "__APP__" "$app" "$final_path/.drush/$app.aliases.drushrc.php"
+ynh_replace_string "__DOMAIN__" "$domain" "$final_path/.drush/$app.aliases.drushrc.php"
+ynh_replace_string "__PATH_URL__" "$path_url" "$final_path/.drush/$app.aliases.drushrc.php"
+
+#=================================================
+# INSTALL COMPOSER
+#=================================================
+ynh_print_info --message="Installing Composer..."
+
+mkdir -p "$final_path/.composer"
+
+cp -f "../conf/composer.json" "$final_path/.composer/composer.json"
+
+ynh_install_composer --phpversion="7.2" --workdir="$final_path/.composer"
+
+export PATH="$final_path/.composer/vendor/bin:$PATH"
+
+#=================================================
+# INSTALL DRUPAL
+#=================================================
+ynh_print_info --message="Installing Drupal..."
+
+chown -R $app: $final_path
+
+pushd "$final_path"    
+	sudo -u $app env PATH=$PATH drush pm-download -y drupal-7 --drupal-project-rename=$app
+popd
+
+sudo -u $app env PATH=$PATH drush @$app site-install $install_profil --account-name=$admin --account-pass=$password --account-mail=$admin_mail --db-url=mysql://$db_user:$db_pwd@localhost/$db_name --site-name="$app" --locale=$language --yes
+sudo -u $app env PATH=$PATH drush @$app pm-download drush_language
+#sudo -u $app env PATH=$PATH drush @$app pm-download ldap
+#sudo -u $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
+sudo -u $app env PATH=$PATH drush @$app pm-download l10n_update
+sudo -u $app env PATH=$PATH drush @$app pm-enable -y l10n_update
+sudo -u $app env PATH=$PATH drush @$app language-add $language
+sudo -u $app env PATH=$PATH drush @$app language-default $language
+sudo -u $app env PATH=$PATH drush @$app cache-clear drush
+sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh
+sudo -u $app env PATH=$PATH drush @$app l10n-update
+sudo -u $app env PATH=$PATH drush @$app pm-update
+sudo -u $app env PATH=$PATH drush @$app core-cron
+
+ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
+ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
+
+chown -R $app: $final_path
+chmod 755 $final_path/$app/sites/default/
+
+sudo -u $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app civicrm-install --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path_url" --ssl=on
+
+#=================================================
+# SET THE CRON FILE
+#=================================================
+ynh_print_info --message="Set the cron file"
+
+cp ../conf/cron /etc/cron.d/$app
+
+ynh_replace_string "__FINALPATH__" "$final_path" /etc/cron.d/$app
+ynh_replace_string "__APP__" "$app" /etc/cron.d/$app
+
+#=================================================
+# PHP-FPM CONFIGURATION
+#=================================================
+ynh_print_info --message="Configuring php-fpm..."
+
+# Create a dedicated php-fpm config
+ynh_add_fpm_config --phpversion="7.2"
+
+#=================================================
+# STORE THE CONFIG FILE CHECKSUM
+#=================================================
+
+# Calculate and store the config file checksum into the app settings
+ynh_store_file_checksum --file="$final_path/$app/sites/default/settings.php"
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# SECURE FILES AND DIRECTORIES
+#=================================================
+
+# Set permissions to app files
+chown -R $app: $final_path
+
+#=================================================
+# SETUP SSOWAT
+#=================================================
+ynh_print_info --message="Configuring SSOwat..."
+
+# Make app public if necessary
+if [ $is_public -eq 1 ]
+then
+	# unprotected_uris allows SSO credentials to be passed anyway.
+	ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
+fi
+
+#=================================================
+# RELOAD NGINX
+#=================================================
+ynh_print_info --message="Reloading nginx web server..."
+
+systemctl reload nginx
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_print_info --message="Installation of $app completed"
