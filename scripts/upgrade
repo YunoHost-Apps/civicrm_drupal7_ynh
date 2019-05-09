@@ -112,6 +112,15 @@ ynh_add_fpm_config --phpversion="7.2"
 #=================================================
 # SPECIFIC UPGRADE
 #=================================================
+# UPDATE thread_stack
+#=================================================
+ynh_print_info --message="Updating thread_stack..."
+
+ynh_replace_string "thread_stack = 128K" "thread_stack = 192K" "/etc/mysql/my.cnf"
+
+systemctl restart mysql
+
+#=================================================
 # UPDATE COMPOSER
 #=================================================
 ynh_print_info --message="Updating Composer..."
@@ -127,7 +136,7 @@ export PATH="$final_path/.composer/vendor/bin:$PATH"
 
 sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
 sudo -u $app env PATH=$PATH drush @$app cache-clear all 
-sudo -u $app env PATH=$PATH drush @$app pm-update drupal
+sudo -u $app env PATH=$PATH drush @$app pm-update -y drupal
 sudo -u $app env PATH=$PATH drush @$app cache-clear all 
 sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh
 sudo -u $app env PATH=$PATH drush @$app l10n-update
@@ -184,6 +193,13 @@ fi
 ynh_print_info --message="Reloading nginx web server..."
 
 systemctl reload nginx
+
+#=================================================
+# RESTART CRON
+#=================================================
+ynh_print_info --message="Restarting cron..."
+
+systemctl restart cron
 
 #=================================================
 # END OF SCRIPT
