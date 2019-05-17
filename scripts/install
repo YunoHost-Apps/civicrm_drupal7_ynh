@@ -31,7 +31,7 @@ language=$YNH_APP_ARG_LANGUAGE
 password=$YNH_APP_ARG_PASSWORD
 install_profil=$YNH_APP_ARG_INSTALL_PROFIL
 
-admin_mail=$(ynh_user_get_info $admin 'mail')
+admin_mail=$(ynh_user_get_info --username=$admin --key="mail")
 
 app=$YNH_APP_INSTANCE_NAME
 
