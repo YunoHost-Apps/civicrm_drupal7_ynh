@@ -41,7 +41,7 @@ app=$YNH_APP_INSTANCE_NAME
 ynh_print_info --message="Validating installation parameters..."
 
 final_path=/var/www/$app
-test ! -e "$final_path" || ynh_die "This path already contains a folder"
+test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
 
 # Register (book) web path
 ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
@@ -73,19 +73,17 @@ ynh_install_php --phpversion="7.2" --package="$extra_pkg_dependencies"
 #=================================================
 ynh_print_info --message="Creating a MySQL database..."
 
-db_name=$(ynh_sanitize_dbid $app)
+db_name=$(ynh_sanitize_dbid --db_name=$app)
 db_user=$db_name
 ynh_app_setting_set --app=$app --key=db_name --value=$db_name
 ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
 
 #=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
+# CREATE FINAL PATH
 #=================================================
-ynh_print_info --message="Setting up source files..."
+ynh_print_info --message="Creating final path..."
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-# Download, check integrity, uncompress and patch the source from app.src
-
 mkdir -p "$final_path"
 
 #=================================================
@@ -105,6 +103,14 @@ ynh_print_info --message="Configuring system user..."
 ynh_system_user_create --username=$app --home_dir="$final_path"
 
 #=================================================
+# PHP-FPM CONFIGURATION
+#=================================================
+ynh_print_info --message="Configuring php-fpm..."
+
+# Create a dedicated php-fpm config
+ynh_add_fpm_config --phpversion="7.2"
+
+#=================================================
 # SPECIFIC SETUP
 #=================================================
 # CREATE DRUSH ALIAS
@@ -115,10 +121,10 @@ mkdir -p "$final_path/.drush"
 
 cp -f "../conf/yoursite.aliases.drushrc.php" "$final_path/.drush/$app.aliases.drushrc.php"
 
-ynh_replace_string "__FINALPATH__" "$final_path" "$final_path/.drush/$app.aliases.drushrc.php"
-ynh_replace_string "__APP__" "$app" "$final_path/.drush/$app.aliases.drushrc.php"
-ynh_replace_string "__DOMAIN__" "$domain" "$final_path/.drush/$app.aliases.drushrc.php"
-ynh_replace_string "__PATH_URL__" "$path_url" "$final_path/.drush/$app.aliases.drushrc.php"
+ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="$final_path/.drush/$app.aliases.drushrc.php"
+ynh_replace_string --match_string="__APP__" --replace_string="$app" --target_file="$final_path/.drush/$app.aliases.drushrc.php"
+ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="$final_path/.drush/$app.aliases.drushrc.php"
+ynh_replace_string --match_string="__PATH_URL__" --replace_string="$path_url" --target_file="$final_path/.drush/$app.aliases.drushrc.php"
 
 #=================================================
 # INSTALL COMPOSER
@@ -134,9 +140,9 @@ ynh_install_composer --phpversion="7.2" --workdir="$final_path/.composer"
 export PATH="$final_path/.composer/vendor/bin:$PATH"
 
 #=================================================
-# INSTALL DRUPAL
+# INSTALL DRUPAL AND CIVICRM
 #=================================================
-ynh_print_info --message="Installing Drupal..."
+ynh_print_info --message="Installing Drupal and CiviCRM..."
 
 chown -R $app: $final_path
 
@@ -167,22 +173,14 @@ chmod 755 $final_path/$app/sites/default/
 sudo -u $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app civicrm-install --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path_url" --ssl=on
 
 #=================================================
-# SET THE CRON FILE
+# SETUP THE CRON FILE
 #=================================================
-ynh_print_info --message="Set the cron file"
+ynh_print_info --message="Setuping the cron file..."
 
 cp ../conf/cron /etc/cron.d/$app
 
-ynh_replace_string "__FINALPATH__" "$final_path" /etc/cron.d/$app
-ynh_replace_string "__APP__" "$app" /etc/cron.d/$app
-
-#=================================================
-# PHP-FPM CONFIGURATION
-#=================================================
-ynh_print_info --message="Configuring php-fpm..."
-
-# Create a dedicated php-fpm config
-ynh_add_fpm_config --phpversion="7.2"
+ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="/etc/cron.d/$app"
+ynh_replace_string --match_string="__APP__" --replace_string="$app" --target_file="/etc/cron.d/$app"
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
@@ -217,7 +215,7 @@ fi
 #=================================================
 ynh_print_info --message="Reloading nginx web server..."
 
-systemctl reload nginx
+ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT
