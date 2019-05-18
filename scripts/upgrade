@@ -28,6 +28,12 @@ language=$(ynh_app_setting_get --app=$app --key=language)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 
 #=================================================
+# CHECK VERSION
+#=================================================
+
+upgrade_type=$(ynh_check_app_version_changed)
+
+#=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
 ynh_print_info --message="Ensuring downward compatibility..."
@@ -42,13 +48,13 @@ elif [ "$is_public" = "No" ]; then
 fi
 
 # If db_name doesn't exist, create it
-if [ -z $db_name ]; then
+if [ -z "$db_name" ]; then
 	db_name=$(ynh_sanitize_dbid --db_name=$app)
 	ynh_app_setting_set --app=$app --key=db_name --value=$db_name
 fi
 
 # If final_path doesn't exist, create it
-if [ -z $final_path ]; then
+if [ -z "$final_path" ]; then
 	final_path=/var/www/$app
 	ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 fi
@@ -69,14 +75,6 @@ ynh_abort_if_errors
 
 #=================================================
 # STANDARD UPGRADE STEPS
-#=================================================
-# DOWNLOAD, CHECK AND UNPACK SOURCE
-#=================================================
-ynh_print_info --message="Upgrading source files..."
-
-# Download, check integrity, uncompress and patch the source from app.src
-#ynh_setup_source --dest_dir="$final_path"
-
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
@@ -112,6 +110,15 @@ ynh_add_fpm_config --phpversion="7.2"
 #=================================================
 # SPECIFIC UPGRADE
 #=================================================
+# UPDATE thread_stack
+#=================================================
+ynh_print_info --message="Updating thread_stack..."
+
+ynh_replace_string --match_string="thread_stack = 128K" --replace_string="thread_stack = 192K" --target_file="/etc/mysql/my.cnf"
+
+ynh_systemd_action --service_name=mysql --action="restart"
+
+#=================================================
 # UPDATE COMPOSER
 #=================================================
 ynh_print_info --message="Updating Composer..."
@@ -127,7 +134,7 @@ export PATH="$final_path/.composer/vendor/bin:$PATH"
 
 sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
 sudo -u $app env PATH=$PATH drush @$app cache-clear all 
-sudo -u $app env PATH=$PATH drush @$app pm-update drupal
+sudo -u $app env PATH=$PATH drush @$app pm-update -y drupal
 sudo -u $app env PATH=$PATH drush @$app cache-clear all 
 sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh
 sudo -u $app env PATH=$PATH drush @$app l10n-update
@@ -146,6 +153,18 @@ sudo -u $app env PATH=$PATH drush @$app vset --exact maintenance_mode 0
 ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 # Recalculate and store the checksum of the file for the next upgrade.
 ynh_store_file_checksum --file="$final_path/$app/sites/default/settings.php"
+
+#=================================================
+# SETUP THE CRON FILE
+#=================================================
+ynh_print_info --message="Setuping the cron file"
+
+cp -f ../conf/cron /etc/cron.d/$app
+
+ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="/etc/cron.d/$app"
+ynh_replace_string --match_string="__APP__" --replace_string="$app" --target_file="/etc/cron.d/$app"
+
+ynh_systemd_action --service_name=cron --action=reload
 
 #=================================================
 # GENERIC FINALIZATION
@@ -173,7 +192,7 @@ fi
 #=================================================
 ynh_print_info --message="Reloading nginx web server..."
 
-systemctl reload nginx
+ynh_systemd_action --service_name=nginx --action=reload
 
 #=================================================
 # END OF SCRIPT

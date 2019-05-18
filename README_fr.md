@@ -11,7 +11,7 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 ## Vue d'ensemble
 Gestion des relations avec les constituants (GRC/CRM) pour les organisations à but non lucratif, les ONG et les organisations de défense des droits.
 
-**Version incluse:** 5.12.4 et Drupal 7
+**Version incluse:** 5.13.2 et Drupal 7
 
 ## Captures d'écran
 
@@ -29,9 +29,9 @@ le module d'authentification LDAP peut être installé
 
 #### Supported architectures
 
-* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/civicrm_drupal7%20%28Community%29.svg)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/civicrm_drupal7%20%28Community%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/civicrm_drupal7/)
-* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/civicrm_drupal7%20%28Community%29.svg)](https://ci-stretch.nohost.me/ci/apps/civicrm_drupal7/)
+* x86-64b - [![Build Status](https://ci-apps.yunohost.org/ci/logs/civicrm_drupal7%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/)
+* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/civicrm_drupal7%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/civicrm_drupal7/)
+* Jessie x86-64b - [![Build Status](https://ci-stretch.nohost.me/ci/logs/civicrm_drupal7%20%28Apps%29.svg)](https://ci-stretch.nohost.me/ci/apps/civicrm_drupal7/)
 
 ## Liens
 

@@ -1,2 +1,7 @@
-H * * * * __APP__ /usr/bin/env PATH=__FINALPATH__/.composer/vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 drush --quiet @__APP__ core-cron
-0 22 * * * __APP__ /usr/bin/env PATH=__FINALPATH__/.composer/vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 drush --quiet @__APP__ pm-update -y
+SHELL=/bin/sh
+PATH=__FINALPATH__/.composer/vendor/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# m h dom mon dow user	command
+30 *	* * *	__APP__	drush --quiet @__APP__ core-cron
+00 22	* * *	__APP__	drush --quiet @__APP__ pm-update -y
+#
