@@ -66,6 +66,12 @@ ynh_app_setting_set --app=$app --key=install_profil --value=$install_profil
 ynh_print_info --message="Installing dependencies..."
 
 ynh_install_app_dependencies $pkg_dependencies
+
+#=================================================
+# INSTALL PHP
+#=================================================
+ynh_print_info --message="Installing PHP..."
+
 ynh_install_php --phpversion="7.2" --package="$extra_pkg_dependencies"
 
 #=================================================
@@ -101,14 +107,6 @@ ynh_print_info --message="Configuring system user..."
 
 # Create a system user
 ynh_system_user_create --username=$app --home_dir="$final_path"
-
-#=================================================
-# PHP-FPM CONFIGURATION
-#=================================================
-ynh_print_info --message="Configuring php-fpm..."
-
-# Create a dedicated php-fpm config
-ynh_add_fpm_config --phpversion="7.2"
 
 #=================================================
 # SPECIFIC SETUP
@@ -191,6 +189,14 @@ ynh_store_file_checksum --file="$final_path/$app/sites/default/settings.php"
 
 #=================================================
 # GENERIC FINALIZATION
+#=================================================
+# PHP-FPM CONFIGURATION
+#=================================================
+ynh_print_info --message="Configuring php-fpm..."
+
+# Create a dedicated php-fpm config
+ynh_add_fpm_config --phpversion="7.2"
+
 #=================================================
 # SECURE FILES AND DIRECTORIES
 #=================================================
