@@ -110,25 +110,25 @@ ynh_add_fpm_config --phpversion="7.2"
 #=================================================
 # SPECIFIC UPGRADE
 #=================================================
-# UPDATE thread_stack
+# UPGRADE THREAD_STACK
 #=================================================
-ynh_print_info --message="Updating thread_stack..."
+ynh_print_info --message="Upgrading thread_stack..."
 
 ynh_replace_string --match_string="thread_stack = 128K" --replace_string="thread_stack = 192K" --target_file="/etc/mysql/my.cnf"
 
 ynh_systemd_action --service_name=mysql --action="restart"
 
 #=================================================
-# UPDATE COMPOSER
+# UPGRADE COMPOSER
 #=================================================
-ynh_print_info --message="Updating Composer..."
+ynh_print_info --message="Upgrading Composer..."
 
 ynh_install_composer --phpversion="7.2" --workdir="$final_path/.composer"
 
 #=================================================
-# UPDATE DRUPAL
+# UPGRADE DRUPAL
 #=================================================
-ynh_print_info --message="Updating Drupal..."
+ynh_print_info --message="Upgrading Drupal..."
 
 ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 export PATH="$final_path/.composer/vendor/bin:$PATH"
