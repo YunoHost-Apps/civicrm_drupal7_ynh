@@ -130,6 +130,7 @@ ynh_install_composer --phpversion="7.2" --workdir="$final_path/.composer"
 #=================================================
 ynh_print_info --message="Updating Drupal..."
 
+ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 export PATH="$final_path/.composer/vendor/bin:$PATH"
 
 sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
@@ -150,7 +151,6 @@ sudo -u $app env PATH=$PATH drush @$app vset --exact maintenance_mode 0
 # STORE THE CONFIG FILE CHECKSUM
 #=================================================
 
-ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 # Recalculate and store the checksum of the file for the next upgrade.
 ynh_store_file_checksum --file="$final_path/$app/sites/default/settings.php"
 
