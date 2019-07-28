@@ -11,7 +11,7 @@ Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour
 ## Vue d'ensemble
 Gestion des relations avec les constituants (GRC/CRM) pour les organisations à but non lucratif, les ONG et les organisations de défense des droits.
 
-**Version incluse:** 5.13.4 et Drupal 7
+**Version incluse:** 5.15.1 et Drupal 7
 
 ## Captures d'écran
 
