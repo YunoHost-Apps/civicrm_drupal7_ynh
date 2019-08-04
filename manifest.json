@@ -38,8 +38,8 @@
                     "en": "Choose a path for Drupal 7",
                     "fr": "Choisissez un chemin pour Drupal 7"
                 },
-                "example": "/example",
-                "default": "/example"
+                "example": "/drupal7",
+                "default": "/drupal7"
             },
             {
                 "name": "admin",
