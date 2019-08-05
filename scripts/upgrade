@@ -133,6 +133,8 @@ ynh_print_info --message="Upgrading Drupal..."
 ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 export PATH="$final_path/.composer/vendor/bin:$PATH"
 
+update-alternatives --set php /usr/bin/php7.2
+
 sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
 sudo -u $app env PATH=$PATH drush @$app cache-clear all 
 sudo -u $app env PATH=$PATH drush @$app pm-update -y drupal
@@ -146,6 +148,8 @@ ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --sourc
 sudo -u $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app -y civicrm-upgrade-db
 
 sudo -u $app env PATH=$PATH drush @$app vset --exact maintenance_mode 0 
+
+update-alternatives --set php /usr/bin/php7.0
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM

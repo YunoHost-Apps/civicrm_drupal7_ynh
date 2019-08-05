@@ -144,6 +144,8 @@ ynh_print_info --message="Installing Drupal and CiviCRM..."
 
 chown -R $app: $final_path
 
+update-alternatives --set php /usr/bin/php7.2
+
 pushd "$final_path"    
 	sudo -u $app env PATH=$PATH drush pm-download -y drupal-7 --drupal-project-rename=$app
 popd
@@ -169,6 +171,8 @@ chown -R $app: $final_path
 chmod 755 $final_path/$app/sites/default/
 
 sudo -u $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app civicrm-install --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path_url" --ssl=on
+
+update-alternatives --set php /usr/bin/php7.0
 
 #=================================================
 # SETUP THE CRON FILE
