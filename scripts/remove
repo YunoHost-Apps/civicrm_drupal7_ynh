@@ -19,7 +19,6 @@ ynh_print_info --message="Loading installation settings..."
 app=$YNH_APP_INSTANCE_NAME
 
 domain=$(ynh_app_setting_get --app=$app --key=domain)
-port=$(ynh_app_setting_get --app=$app --key=port)
 db_name=$(ynh_app_setting_get --app=$app --key=db_name)
 db_user=$db_name
 final_path=$(ynh_app_setting_get --app=$app --key=final_path)
@@ -35,13 +34,13 @@ ynh_print_info --message="Removing the MySQL database..."
 ynh_mysql_remove_db --db_user=$db_user --db_name=$db_name
 
 #=================================================
-# REMOVE PHP-FPM CONFIGURATION
+# REMOVE PHP
 #=================================================
-ynh_print_info --message="Removing php-fpm configuration..."
 
-# Remove the dedicated php-fpm config
-ynh_remove_fpm_config
-
+if [ "$(lsb_release --codename --short)" != "buster" ]; then
+	ynh_print_info --message="Removing php..."
+	ynh_remove_php
+fi
 #=================================================
 # REMOVE DEPENDENCIES
 #=================================================
@@ -49,7 +48,6 @@ ynh_print_info --message="Removing dependencies..."
 
 # Remove metapackage and its dependencies
 ynh_remove_app_dependencies
-ynh_remove_php
 
 #=================================================
 # REMOVE APP MAIN DIR
@@ -66,6 +64,14 @@ ynh_print_info --message="Removing nginx web server configuration..."
 
 # Remove the dedicated nginx config
 ynh_remove_nginx_config
+
+#=================================================
+# REMOVE PHP-FPM CONFIGURATION
+#=================================================
+ynh_print_info --message="Removing php-fpm configuration..."
+
+# Remove the dedicated php-fpm config
+ynh_remove_fpm_config
 
 #=================================================
 # SPECIFIC REMOVE

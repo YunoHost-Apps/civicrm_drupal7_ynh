@@ -85,12 +85,29 @@ ynh_print_info --message="Upgrading nginx web server configuration..."
 ynh_add_nginx_config
 
 #=================================================
+# UPGRADE PHP7.3
+#=================================================
+
+if [ "$(lsb_release --codename --short)" = "buster" ]; then
+	pkg_dependencies="$pkg_dependencies $extra_pkg_dependencies"
+else
+	if [ "$(ynh_app_setting_get --app=$app --key=php_version)" != "7.3" ]; then
+		ynh_print_info --message="Upgrading PHP7.3..."
+		ynh_remove_fpm_config
+		ynh_remove_app_dependencies
+		ynh_remove_php
+		ynh_install_php --phpversion="7.3" --package="$extra_pkg_dependencies"
+	else
+		ynh_install_php --phpversion="7.3" --package="$extra_pkg_dependencies"
+	fi
+fi
+
+#=================================================
 # UPGRADE DEPENDENCIES
 #=================================================
 ynh_print_info --message="Upgrading dependencies..."
 
 ynh_install_app_dependencies $pkg_dependencies
-ynh_install_php --phpversion="7.2" --package="$extra_pkg_dependencies"
 
 #=================================================
 # CREATE DEDICATED USER
@@ -106,7 +123,7 @@ ynh_system_user_create --username=$app --home_dir="$final_path"
 ynh_print_info --message="Upgrading php-fpm configuration..."
 
 # Create a dedicated php-fpm config
-ynh_add_fpm_config --phpversion="7.2"
+ynh_add_fpm_config --phpversion="7.3"
 
 #=================================================
 # SPECIFIC UPGRADE
@@ -124,7 +141,7 @@ ynh_systemd_action --service_name=mysql --action="restart"
 #=================================================
 ynh_print_info --message="Upgrading Composer..."
 
-ynh_install_composer --phpversion="7.2" --workdir="$final_path/.composer"
+ynh_install_composer --phpversion="7.3" --workdir="$final_path/.composer"
 
 #=================================================
 # UPGRADE DRUPAL
@@ -134,8 +151,7 @@ ynh_print_info --message="Upgrading Drupal..."
 ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 export PATH="$final_path/.composer/vendor/bin:$PATH"
 
-update-alternatives --set php /usr/bin/php7.2
-
+update-alternatives --set php /usr/bin/php7.3
 sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
 sudo -u $app env PATH=$PATH drush @$app cache-clear all 
 sudo -u $app env PATH=$PATH drush @$app pm-update -y drupal
@@ -145,11 +161,9 @@ sudo -u $app env PATH=$PATH drush @$app l10n-update
 
 ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
 ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
-
 sudo -u $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app -y civicrm-upgrade-db
 
-sudo -u $app env PATH=$PATH drush @$app vset --exact maintenance_mode 0 
-
+sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0
 update-alternatives --set php /usr/bin/php7.0
 
 #=================================================
