@@ -7,7 +7,9 @@
 # dependencies used by the app
 pkg_dependencies="curl libzip-dev"
 
-extra_pkg_dependencies="php7.3-fpm php7.3-cli php7.3-gd php7.3-mysql php7.3-xml php7.3-ldap php7.3-mbstring php7.3-curl php7.3-soap"
+YNH_PHP_VERSION="7.3"
+
+extra_php_dependencies="php${YNH_PHP_VERSION}-fpm php${YNH_PHP_VERSION}-cli php${YNH_PHP_VERSION}-gd php${YNH_PHP_VERSION}-mysql php${YNH_PHP_VERSION}-xml php${YNH_PHP_VERSION}-ldap php${YNH_PHP_VERSION}-mbstring php${YNH_PHP_VERSION}-curl php${YNH_PHP_VERSION}-soap"
 
 #=================================================
 # PERSONAL HELPERS
