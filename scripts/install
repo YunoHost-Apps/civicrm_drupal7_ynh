@@ -54,7 +54,6 @@ ynh_script_progression --message="Storing installation settings..."
 ynh_app_setting_set --app=$app --key=domain --value=$domain
 ynh_app_setting_set --app=$app --key=path --value=$path_url
 ynh_app_setting_set --app=$app --key=admin --value=$admin
-ynh_app_setting_set --app=$app --key=is_public --value=$is_public
 ynh_app_setting_set --app=$app --key=language --value=$language
 ynh_app_setting_set --app=$app --key=install_profil --value=$install_profil
 
@@ -127,13 +126,7 @@ ynh_systemd_action --service_name=mysql --action="restart"
 ynh_script_progression --message="Creating Drush alias..."
 
 mkdir -p "$final_path/.drush"
-drush_aliasconfig="$final_path/.drush/$app.aliases.drushrc.php"
-cp -f "../conf/yoursite.aliases.drushrc.php" "$drush_aliasconfig"
-
-ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="$drush_aliasconfig"
-ynh_replace_string --match_string="__APP__" --replace_string="$app" --target_file="$drush_aliasconfig"
-ynh_replace_string --match_string="__DOMAIN__" --replace_string="$domain" --target_file="$drush_aliasconfig"
-ynh_replace_string --match_string="__PATH_URL__" --replace_string="$path_url" --target_file="$drush_aliasconfig"
+ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$final_path/.drush/$app.aliases.drushrc.php"
 
 #=================================================
 # INSTALL COMPOSER
@@ -141,8 +134,7 @@ ynh_replace_string --match_string="__PATH_URL__" --replace_string="$path_url" --
 ynh_script_progression --message="Installing Composer..."
 
 mkdir -p "$final_path/.composer"
-
-cp -f "../conf/composer.json" "$final_path/.composer/composer.json"
+ynh_add_config --template="../conf/composer.json" --destination="$final_path/.composer/composer.json"
 
 ynh_install_composer --phpversion="$phpversion" --workdir="$final_path/.composer"
 
@@ -190,10 +182,7 @@ update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
 #=================================================
 ynh_script_progression --message="Setuping the cron file..."
 
-cp ../conf/cron /etc/cron.d/$app
-
-ynh_replace_string --match_string="__FINALPATH__" --replace_string="$final_path" --target_file="/etc/cron.d/$app"
-ynh_replace_string --match_string="__APP__" --replace_string="$app" --target_file="/etc/cron.d/$app"
+ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
@@ -216,13 +205,14 @@ chown -R $app: $final_path
 #=================================================
 # SETUP SSOWAT
 #=================================================
-ynh_script_progression --message="Configuring SSOwat..."
+ynh_script_progression --message="Configuring permissions..."
 
 # Make app public if necessary
 if [ $is_public -eq 1 ]
 then
-	# unprotected_uris allows SSO credentials to be passed anyway.
-	ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
+	# Everyone can access the app.
+	# The "main" permission is automatically created before the install script.
+	ynh_permission_update --permission="main" --add="visitors"
 fi
 
 #=================================================

@@ -1,7 +1,7 @@
 # CiviCRM on Drupal 7 for YunoHost
 
 [![Integration level](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://dash.yunohost.org/appci/app/civicrm_drupal7) ![](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)  
-[![Install CiviCRM on Drupal 7 with YunoHost](https://install-app.yunohost.org/install-with-yunohost.png)](https://install-app.yunohost.org/?app=civicrm_drupal7)
+[![Install CiviCRM on Drupal 7 with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=civicrm_drupal7)
 
 *[Lire ce readme en français.](./README_fr.md)*
 
@@ -40,8 +40,7 @@ LDAP module can be installed
 
 ---
 
-Developer info
-----------------
+## Developer info
 
 Please send your pull request to the [testing branch](https://github.com/YunoHost-Apps/civicrm_drupal7_ynh/tree/testing).
 
