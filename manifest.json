@@ -6,18 +6,19 @@
         "en": "CRM for non-profits, NGOs and advocacy organizations.",
         "fr": "CRM pour organisations à but non lucratif et ONG."
     },
-    "version": "5.30.1-7.0~ynh1",
+    "version": "5.34.0-7.0~ynh1",
     "url": "https://civicrm.org",
     "license": "AGPL-3.0-or-later",
     "maintainer": {
         "name": "yalh76"
     },
     "requirements": {
-        "yunohost": ">= 3.5"
+        "yunohost": ">= 4.1.7.3"
     },
     "multi_instance": true,
     "services": [
         "nginx",
+        "php7.3-fpm",
         "mysql"
     ],
     "arguments": {
@@ -46,7 +47,7 @@
                 "type": "user",
                 "ask": {
                     "en": "Choose an admin user",
-                    "fr": "Choisissez l’administrateur"
+                    "fr": "Choisissez l'administrateur"
                 },
                 "example": "johndoe"
             },
