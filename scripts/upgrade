@@ -135,6 +135,10 @@ ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app variable-set --exact 
 
 update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
 
+chmod 750 "$final_path"
+chmod -R o-rwx "$final_path"
+chown -R root:$app "$final_path"
+
 #=================================================
 # STORE THE CONFIG FILE CHECKSUM
 #=================================================
