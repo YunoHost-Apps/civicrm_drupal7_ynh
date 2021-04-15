@@ -92,7 +92,7 @@ ynh_script_progression --message="Creating final path..."
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 mkdir -p "$final_path/$app"
 
-chmod 750 "$final_path"
+chmod -R 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
@@ -130,6 +130,7 @@ ynh_systemd_action --service_name=mysql --action="restart"
 ynh_script_progression --message="Creating Drush alias..."
 
 mkdir -p "$final_path/.drush"
+
 ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$final_path/.drush/$app.aliases.drushrc.php"
 
 #=================================================
@@ -138,6 +139,7 @@ ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="
 ynh_script_progression --message="Installing Composer..."
 
 mkdir -p "$final_path/.composer"
+
 ynh_add_config --template="../conf/composer.json" --destination="$final_path/.composer/composer.json"
 
 ynh_install_composer --phpversion="$phpversion" --workdir="$final_path/.composer"
@@ -149,7 +151,7 @@ export PATH="$final_path/.composer/vendor/bin:$PATH"
 #=================================================
 ynh_script_progression --message="Installing Drupal and CiviCRM..."
 
-chmod 750 "$final_path"
+chmod -R 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
@@ -157,31 +159,35 @@ update-alternatives --set php /usr/bin/php$phpversion
 
 pushd "$final_path"
 	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush pm-download -y drupal-7 --drupal-project-rename=$app
+
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app site-install $install_profil --account-name=$admin --account-pass=$password --account-mail=$admin_mail --db-url=mysql://$db_user:$db_pwd@localhost/$db_name --site-name="$app" --locale=$language --yes
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download drush_language
+	#ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download ldap
+	#ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download l10n_update
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-enable -y l10n_update
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-add $language
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-default $language
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app cache-clear drush
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-update
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app core-cron
+
+	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
+	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
+
+	chmod -R 750 "$final_path"
+	chmod -R o-rwx "$final_path"
+	chown -R $app:www-data "$final_path"
+
+	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app civicrm-install --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path_url" --ssl=on
 popd
 
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app site-install $install_profil --account-name=$admin --account-pass=$password --account-mail=$admin_mail --db-url=mysql://$db_user:$db_pwd@localhost/$db_name --site-name="$app" --locale=$language --yes
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download drush_language
-#ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download ldap
-#ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download l10n_update
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-enable -y l10n_update
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-add $language
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-default $language
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app cache-clear drush
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-update
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app core-cron
-
-ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
-ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
-
-chown -R $app: $final_path
-chmod 755 $final_path/$app/sites/default/
-
-ynh_exec_warn_less sudo -u $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app civicrm-install --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path_url" --ssl=on
-
 update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
+
+ynh_store_file_checksum --file="$final_path/$app/sites/default/settings.php"
+ynh_store_file_checksum --file="$final_path/$app/sites/default/civicrm.settings.php"
 
 #=================================================
 # SETUP THE CRON FILE
@@ -189,17 +195,6 @@ update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
 ynh_script_progression --message="Setuping the cron file..."
 
 ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
-
-#=================================================
-# STORE THE CONFIG FILE CHECKSUM
-#=================================================
-ynh_script_progression --message="Storing the config file checksum..."
-
-# Calculate and store the config file checksum into the app settings
-ynh_store_file_checksum --file="$final_path/$app/sites/default/settings.php"
-
-chmod 400 "$final_path/$app/sites/default/settings.php"
-chown $app:$app "$final_path/$app/sites/default/settings.php"
 
 #=================================================
 # GENERIC FINALIZATION
