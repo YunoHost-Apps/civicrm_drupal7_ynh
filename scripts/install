@@ -92,7 +92,7 @@ ynh_script_progression --message="Creating final path..."
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 mkdir -p "$final_path/$app"
 
-chmod -R 750 "$final_path"
+chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
@@ -151,7 +151,7 @@ export PATH="$final_path/.composer/vendor/bin:$PATH"
 #=================================================
 ynh_script_progression --message="Installing Drupal and CiviCRM..."
 
-chmod -R 750 "$final_path"
+chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
@@ -177,7 +177,7 @@ pushd "$final_path"
 	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
 	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 
-	chmod -R 750 "$final_path"
+	chmod 750 "$final_path"
 	chmod -R o-rwx "$final_path"
 	chown -R $app:www-data "$final_path"
 

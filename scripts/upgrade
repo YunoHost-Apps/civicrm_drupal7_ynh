@@ -77,7 +77,7 @@ then
 	mkdir -p "$final_path/$app"
 fi
 
-chmod -R 750 "$final_path"
+chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
@@ -140,7 +140,7 @@ ynh_script_progression --message="Upgrading Drupal..."
 ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
 ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/civicrm.settings.php"
 
-chmod -R 750 "$final_path"
+chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
 chown -R $app:www-data "$final_path"
 
@@ -160,7 +160,7 @@ pushd "$final_path"
 
 	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0
 
-	chmod -R 750 "$final_path"
+	chmod 750 "$final_path"
 	chmod -R o-rwx "$final_path"
 	chown -R $app:www-data "$final_path"
 popd
