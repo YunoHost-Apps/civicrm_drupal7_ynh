@@ -177,6 +177,8 @@ pushd "$final_path"
 	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
 	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 
+	touch "$final_path/$app/sites/default/civicrm.settings.php"
+	
 	chmod 750 "$final_path"
 	chmod -R o-rwx "$final_path"
 	chown -R $app:www-data "$final_path"
