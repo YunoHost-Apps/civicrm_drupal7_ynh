@@ -29,8 +29,8 @@ Le module d'authentification LDAP peut être installé
 
 #### Architectures supportées
 
-* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/civicrm_drupal7%20%28Apps%29.svg)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/civicrm_drupal7%20%28Apps%29.svg)](https://ci-apps-arm.yunohost.org/ci/apps/civicrm_drupal7/)
+* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/civicrm_drupal7.svg)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/)
+* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/civicrm_drupal7.svg)](https://ci-apps-arm.yunohost.org/ci/apps/civicrm_drupal7/)
 
 ## Liens
 

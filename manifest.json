@@ -6,7 +6,7 @@
         "en": "CRM for non-profits, NGOs and advocacy organizations.",
         "fr": "CRM pour organisations à but non lucratif et ONG."
     },
-    "version": "5.34.0-7.0~ynh1",
+    "version": "5.34.0-7.0~ynh2",
     "url": "https://civicrm.org",
     "license": "AGPL-3.0-or-later",
     "maintainer": {
@@ -26,38 +26,22 @@
             {
                 "name": "domain",
                 "type": "domain",
-                "ask": {
-                    "en": "Choose a domain name for Drupal 7",
-                    "fr": "Choisissez un nom de domaine pour Drupal 7"
-                },
                 "example": "example.com"
             },
             {
                 "name": "path",
                 "type": "path",
-                "ask": {
-                    "en": "Choose a path for Drupal 7",
-                    "fr": "Choisissez un chemin pour Drupal 7"
-                },
                 "example": "/drupal7",
                 "default": "/drupal7"
             },
             {
                 "name": "admin",
                 "type": "user",
-                "ask": {
-                    "en": "Choose an admin user",
-                    "fr": "Choisissez l'administrateur"
-                },
                 "example": "johndoe"
             },
             {
                 "name": "is_public",
                 "type": "boolean",
-                "ask": {
-                    "en": "Is it a public application?",
-                    "fr": "Est-ce une application publique ?"
-                },
                 "default": true
             },
             {
@@ -73,10 +57,6 @@
             {
                 "name": "password",
                 "type": "password",
-                "ask": {
-                    "en": "Set the administrator password",
-                    "fr": "Définissez le mot de passe administrateur"
-                },
                 "example": "Choose a password"
             },
             {
