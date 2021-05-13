@@ -7,7 +7,6 @@
 #=================================================
 
 source _common.sh
-source ynh_composer__3
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -74,7 +73,10 @@ ynh_system_user_create --username=$app --home_dir="$final_path"
 
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
-	mkdir -p "$final_path/$app"
+	ynh_secure_remove --file="$final_path/$app/sites/all/modules/civicrm"
+	mkdir -p "$final_path/$app/sites/all/modules/civicrm"
+	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
+	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 fi
 
 chmod 750 "$final_path"
@@ -154,8 +156,6 @@ pushd "$final_path"
 	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh
 	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update
 
-	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
-	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app -y civicrm-upgrade-db
 
 	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0

@@ -11,7 +11,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 ## Overview
 Open source constituent relationship management (CRM) for non-profits, NGOs and advocacy organizations.
 
-**Shipped version:** 5.34.0 on Drupal 7
+**Shipped version:** 5.37.2 on Drupal 7
 
 ## Screenshots
 

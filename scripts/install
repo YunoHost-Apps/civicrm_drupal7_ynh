@@ -7,7 +7,6 @@
 #=================================================
 
 source _common.sh
-source ynh_composer__3
 source /usr/share/yunohost/helpers
 
 #=================================================
@@ -90,7 +89,10 @@ ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
 ynh_script_progression --message="Creating final path..."
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-mkdir -p "$final_path/$app"
+mkdir -p "$final_path/$app/sites/all/modules/civicrm"
+
+ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
+ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 
 chmod 750 "$final_path"
 chmod -R o-rwx "$final_path"
@@ -173,9 +175,6 @@ pushd "$final_path"
 	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update
 	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-update
 	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app core-cron
-
-	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
-	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 
 	touch "$final_path/$app/sites/default/civicrm.settings.php"
 	
