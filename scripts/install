@@ -71,7 +71,7 @@ ynh_install_app_dependencies $pkg_dependencies
 ynh_script_progression --message="Configuring system user..."
 
 # Create a system user
-ynh_system_user_create --username=$app --home_dir="$final_path"
+ynh_system_user_create --username=$app --home_dir=$final_path
 
 #=================================================
 # CREATE A MYSQL DATABASE
@@ -89,7 +89,7 @@ ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
 ynh_script_progression --message="Creating final path..."
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-mkdir -p "$final_path/$app/sites/all/modules/civicrm"
+mkdir -p "$final_path/$app/sites/all/modules"
 
 ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
 ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"

@@ -74,7 +74,7 @@ ynh_system_user_create --username=$app --home_dir="$final_path"
 if [ "$upgrade_type" == "UPGRADE_APP" ]
 then
 	ynh_secure_remove --file="$final_path/$app/sites/all/modules/civicrm"
-	mkdir -p "$final_path/$app/sites/all/modules/civicrm"
+	mkdir -p "$final_path/$app/sites/all/modules"
 	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
 	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 fi
