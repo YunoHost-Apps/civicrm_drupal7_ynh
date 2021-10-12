@@ -8,6 +8,13 @@
     },
     "version": "5.38.0-7.0~ynh1",
     "url": "https://civicrm.org",
+    "upstream": {
+        "license": "AGPL-3.0-or-later",
+        "website": "https://civicrm.org/",
+        "demo": "https://civicrm.org/demo",
+        "admindoc": "https://docs.civicrm.org/",
+        "code": "https://github.com/civicrm/civicrm-drupal"
+    },
     "license": "AGPL-3.0-or-later",
     "maintainer": {
         "name": "yalh76"
