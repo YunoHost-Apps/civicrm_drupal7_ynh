@@ -1,2 +1,2 @@
-* Toute limitation connue, contrainte ou élément qui ne fonctionne pas, comme (mais sans s'y limiter) :
-    * Le module d'authentification LDAP peut être installé
+* Toute limitation connue, contrainte ou Ã©lÃ©ment qui ne fonctionne pas, comme (mais sans s'y limiter)Â :
+    * Le module d'authentification LDAP peut Ãªtre installÃ©

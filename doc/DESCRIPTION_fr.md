@@ -1,1 +1,1 @@
-Gestion des relations avec les constituants (GRC/CRM) pour les organisations à but non lucratif, les ONG et les organisations de défense des droits.
+Gestion des relations avec les constituants (GRC/CRM) pour les organisations Ã  but non lucratif, les ONG et les organisations de dÃ©fense des droits.

@@ -1,44 +1,39 @@
-# CiviCRM pour Drupal 7 pour YunoHost
+# CiviCRM on Drupal 7 pour YunoHost
 
 [![Niveau d'intégration](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://dash.yunohost.org/appci/app/civicrm_drupal7) ![](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)  
 [![Installer CiviCRM on Drupal 7 avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=civicrm_drupal7)
 
-*[Read this readme in english.](./README.md)* 
+*[Read this readme in english.](./README.md)*
+*[Lire ce readme en français.](./README_fr.md)*
 
-> *Ce package vous permet d'installer CiviCRM on Drupal 7 rapidement et simplement sur un serveur YunoHost.  
-Si vous n'avez pas YunoHost, consultez [le guide](https://yunohost.org/#/install) pour apprendre comment l'installer.*
+> *Ce package vous permet d'installer CiviCRM on Drupal 7 rapidement et simplement sur un serveur YunoHost.
+Si vous n'avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) pour savoir comment l'installer et en profiter.*
 
 ## Vue d'ensemble
+
 Gestion des relations avec les constituants (GRC/CRM) pour les organisations à but non lucratif, les ONG et les organisations de défense des droits.
 
-**Version incluse:** 5.38.0 et Drupal 7
+
+**Version incluse :** 5.38.0.7.0~ynh1
+
+**Démo :** https://civicrm.org/demo
 
 ## Captures d'écran
 
-![](https://skvare.com/sites/skvare.com/files/civicrm-contact-record-skvare.png)
+![](./doc/screenshots/screenshot.png)
 
-## Documentation
+## Avertissements / informations importantes
 
- * Documentation officielle: https://docs.civicrm.org/
+* Toute limitation connue, contrainte ou élément qui ne fonctionne pas, comme (mais sans s'y limiter) :
+    * Le module d'authentification LDAP peut être installé
 
-## Caractéristiques spécifiques YunoHost
+## Documentations et ressources
 
-#### Support multi-utilisateur
-
-Le module d'authentification LDAP peut être installé
-
-#### Architectures supportées
-
-* x86-64 - [![Build Status](https://ci-apps.yunohost.org/ci/logs/civicrm_drupal7.svg)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/)
-* ARMv8-A - [![Build Status](https://ci-apps-arm.yunohost.org/ci/logs/civicrm_drupal7.svg)](https://ci-apps-arm.yunohost.org/ci/apps/civicrm_drupal7/)
-
-## Liens
-
- * Signaler un bug : https://github.com/YunoHost-Apps/civicrm_drupal7_ynh/issues
- * Site de l'application : https://civicrm.org/
- * Site web YunoHost: https://yunohost.org/
-
----
+* Site officiel de l'app : https://civicrm.org/
+* Documentation officielle de l'admin : https://docs.civicrm.org/
+* Dépôt de code officiel de l'app : https://github.com/civicrm/civicrm-drupal
+* Documentation YunoHost pour cette app : https://yunohost.org/app_civicrm_drupal7
+* Signaler un bug : https://github.com/YunoHost-Apps/civicrm_drupal7_ynh/issues
 
 ## Informations pour les développeurs
 
@@ -50,3 +45,5 @@ sudo yunohost app install https://github.com/YunoHost-Apps/civicrm_drupal7_ynh/t
 ou
 sudo yunohost app upgrade civicrm_drupal7 -u https://github.com/YunoHost-Apps/civicrm_drupal7_ynh/tree/testing --debug
 ```
+
+**Plus d'infos sur le packaging d'applications :** https://yunohost.org/packaging_apps
