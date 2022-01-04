@@ -28,8 +28,7 @@ Open source constituent relationship management (CRM) for non-profits, NGOs and 
 
 ## Disclaimers / important information
 
-* Any known limitations, constrains or stuff not working, such as (but not limited to):
-    * LDAP module can be installed
+* LDAP module can be installed
 
 ## Documentation and resources
 
