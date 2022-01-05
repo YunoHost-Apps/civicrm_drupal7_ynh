@@ -1,0 +1,31 @@
+#!/bin/bash
+
+source /usr/share/yunohost/helpers
+
+force=${2:-0}  # 0/1 --force argument
+dryrun=${3:-0}  # 0/1 --dry-run argument
+pending_conf=$4 # Path of the pending conf file
+
+
+do_pre_regen() {
+  ynh_replace_string --match_string="thread_stack = 128K" --replace_string="thread_stack = 192K" --target_file="${pending_conf}/../mysql/etc/mysql/my.cnf"
+}
+
+do_post_regen() {
+  regen_conf_files=$1
+}
+
+case "$1" in
+  pre)
+    do_pre_regen
+    ;;
+  post)
+    do_post_regen
+    ;;
+  *)
+    echo "Hook called with unknown argument \`$1'" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
