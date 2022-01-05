@@ -24,8 +24,7 @@ Gestion des relations avec les constituants (GRC/CRM) pour les organisations à 
 
 ## Avertissements / informations importantes
 
-* Toute limitation connue, contrainte ou élément qui ne fonctionne pas, comme (mais sans s'y limiter) :
-    * Le module d'authentification LDAP peut être installé
+* Le module d'authentification LDAP peut être installé
 
 ## Documentations et ressources
 
