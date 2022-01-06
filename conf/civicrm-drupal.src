@@ -1,5 +1,5 @@
-SOURCE_URL=https://storage.googleapis.com/civicrm/civicrm-stable/5.38.0/civicrm-5.38.0-drupal.tar.gz
-SOURCE_SUM=991e31f1b6cbabaf8747b0d9b2c7859485fefc72bf4dfe21c8468fb32b5896a5
+SOURCE_URL=https://storage.googleapis.com/civicrm/civicrm-stable/5.44.0/civicrm-5.44.0-drupal.tar.gz
+SOURCE_SUM=133428fad1b2ea32553c795adb55ae65d9f8df3a1d4f78dbc64d4addc5db6fd4
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
