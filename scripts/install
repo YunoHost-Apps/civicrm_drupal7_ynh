@@ -120,9 +120,8 @@ ynh_add_fpm_config --usage=low --footprint=low
 #=================================================
 ynh_script_progression --message="Upgrading thread_stack..."
 
-ynh_replace_string --match_string="thread_stack = 128K" --replace_string="thread_stack = 192K" --target_file="/etc/mysql/my.cnf"
-
-ynh_systemd_action --service_name=mysql --action="restart"
+cp -R ../conf/mysql_hook_regen_conf /usr/share/yunohost/hooks/conf_regen/34-mysql_$app
+yunohost tools regen-conf mysql --force
 
 #=================================================
 # CREATE DRUSH ALIAS
