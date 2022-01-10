@@ -1,29 +1,10 @@
 #!/bin/bash
 
-force=${2:-0}  # 0/1 --force argument
-dryrun=${3:-0}  # 0/1 --dry-run argument
-pending_conf=$4 # Path of the pending conf file
+action=$1
+pending_dir=$4
+mysqlconf="${pending_dir}/../mysql/etc/mysql/my.cnf"
 
+[[ "$action" == "pre" ]] || exit 0
+[[ -e "$mysqlconf" ]] || exit 0
 
-do_pre_regen() {
-  sed --in-place "s@thread_stack = 128K@thread_stack = 192K@g" "${pending_conf}/../mysql/etc/mysql/my.cnf"
-}
-
-do_post_regen() {
-  regen_conf_files=$1
-}
-
-case "$1" in
-  pre)
-    do_pre_regen
-    ;;
-  post)
-    do_post_regen
-    ;;
-  *)
-    echo "Hook called with unknown argument \`$1'" >&2
-    exit 1
-    ;;
-esac
-
-exit 0
+sed --in-place "s@thread_stack = 128K@thread_stack = 192K@g" "${mysqlconf}"
