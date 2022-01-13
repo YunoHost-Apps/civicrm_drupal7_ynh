@@ -157,21 +157,21 @@ chown -R $app:www-data "$final_path"
 update-alternatives --set php /usr/bin/php$phpversion
 
 pushd "$final_path"
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush pm-download -y drupal-7 --drupal-project-rename=$app
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush pm-download -y drupal-7 --drupal-project-rename=$app
 
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app site-install $install_profil --account-name=$admin --account-pass=$password --account-mail=$admin_mail --db-url=mysql://$db_user:$db_pwd@localhost/$db_name --site-name="$app" --locale=$language --yes
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download drush_language
-	#ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download ldap
-	#ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-download l10n_update
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-enable -y l10n_update
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-add $language
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app language-default $language
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app cache-clear drush
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update-refresh
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app l10n-update
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app pm-update
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush @$app core-cron
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app site-install $install_profil --account-name=$admin --account-pass=$password --account-mail=$admin_mail --db-url=mysql://$db_user:$db_pwd@localhost/$db_name --site-name="$app" --locale=$language --yes
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-download drush_language
+	#ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-download ldap
+	#ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-download l10n_update
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y l10n_update
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app language-add $language
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app language-default $language
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app cache-clear drush
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app l10n-update-refresh
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app l10n-update
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-update
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app core-cron
 
 	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
 	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
@@ -182,7 +182,7 @@ pushd "$final_path"
 	chmod -R o-rwx "$final_path"
 	chown -R $app:www-data "$final_path"
 
-	ynh_exec_warn_less sudo -u $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app civicrm-install --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path_url" --ssl=on
+	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app civicrm-install --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path_url" --ssl=on
 popd
 
 update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
