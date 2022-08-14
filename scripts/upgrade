@@ -59,6 +59,9 @@ if ynh_legacy_permissions_exists; then
 	ynh_app_setting_delete --app=$app --key=is_public
 fi
 
+ynh_secure_remove --file="/usr/share/yunohost/hooks/conf_regen/34-mysql_$app"
+yunohost tools regen-conf mysql --force
+
 #=================================================
 # CREATE DEDICATED USER
 #=================================================
@@ -110,14 +113,6 @@ ynh_add_fpm_config --usage=low --footprint=low
 
 #=================================================
 # SPECIFIC UPGRADE
-#=================================================
-# UPGRADE THREAD_STACK
-#=================================================
-ynh_script_progression --message="Upgrading thread_stack..."
-
-cp -R ../conf/mysql_hook_regen_conf /usr/share/yunohost/hooks/conf_regen/34-mysql_$app
-yunohost tools regen-conf mysql --force
-
 #=================================================
 # SETUP THE CRON FILE
 #=================================================

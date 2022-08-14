@@ -116,14 +116,6 @@ ynh_add_fpm_config --usage=low --footprint=low
 #=================================================
 # SPECIFIC SETUP
 #=================================================
-# UPGRADE THREAD_STACK
-#=================================================
-ynh_script_progression --message="Upgrading thread_stack..."
-
-cp -R ../conf/mysql_hook_regen_conf /usr/share/yunohost/hooks/conf_regen/34-mysql_$app
-yunohost tools regen-conf mysql --force
-
-#=================================================
 # CREATE DRUSH ALIAS
 #=================================================
 ynh_script_progression --message="Creating Drush alias..."
