@@ -29,7 +29,7 @@
         "mysql"
     ],
     "arguments": {
-        "install" : [
+        "install": [
             {
                 "name": "domain",
                 "type": "domain"
@@ -39,10 +39,6 @@
                 "type": "path",
                 "example": "/drupal7",
                 "default": "/drupal7"
-            },
-            {
-                "name": "admin",
-                "type": "user"
             },
             {
                 "name": "is_public",
@@ -58,6 +54,10 @@
                 },
                 "choices": ["fr", "en"],
                 "default": "en"
+            },
+            {
+                "name": "admin",
+                "type": "user"
             },
             {
                 "name": "password",
