@@ -1,5 +1,5 @@
-SOURCE_URL=https://storage.googleapis.com/civicrm/civicrm-stable/5.44.0/civicrm-5.44.0-l10n.tar.gz
-SOURCE_SUM=c996ab7e347996ea519f20cc74c94ace9aeb04f1ab738df55721ae6f16b2e495
+SOURCE_URL=https://storage.googleapis.com/civicrm/civicrm-stable/5.52.2/civicrm-5.52.2-l10n.tar.gz
+SOURCE_SUM=b857dfd08e30153a8485cefd3650e3c72769de093d0f691bb873007cf65bd1ec
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true

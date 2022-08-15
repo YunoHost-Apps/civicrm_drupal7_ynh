@@ -2,10 +2,10 @@
 	; Manifest
 		domain="domain.tld"
 		path="/path"
-		admin="john"
-		language="fr"
 		is_public=1
-		password="pass"
+		language="fr"
+		admin="john"
+		password="1Strong-Password"
 		install_profil="minimal"
 	; Checks
 		pkg_linter=1
