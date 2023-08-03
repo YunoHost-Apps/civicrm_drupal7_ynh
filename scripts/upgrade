@@ -160,7 +160,7 @@ pushd "$final_path"
 	chown -R $app:www-data "$final_path"
 popd
 
-update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
+# update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
 
 ynh_store_file_checksum --file="$final_path/$app/sites/default/settings.php"
 ynh_store_file_checksum --file="$final_path/$app/sites/default/civicrm.settings.php"
