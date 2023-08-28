@@ -19,7 +19,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 Open source constituent relationship management (CRM) for non-profits, NGOs and advocacy organizations.
 
 
-**Shipped version:** 5.64.1~ynh1
+**Shipped version:** 5.64.2~ynh1
 
 **Demo:** https://civicrm.org/demo
 
