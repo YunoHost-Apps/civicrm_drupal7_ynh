@@ -19,7 +19,7 @@ Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) po
 Gestion des relations avec les constituants (GRC/CRM) pour les organisations à but non lucratif, les ONG et les organisations de défense des droits.
 
 
-**Version incluse :** 5.65.1~ynh1
+**Version incluse :** 5.67.0~ynh1
 
 **Démo :** https://civicrm.org/demo
 
@@ -36,7 +36,7 @@ Gestion des relations avec les constituants (GRC/CRM) pour les organisations à 
 * Site officiel de l’app : <https://civicrm.org/>
 * Documentation officielle de l’admin : <https://docs.civicrm.org/>
 * Dépôt de code officiel de l’app : <https://github.com/civicrm/civicrm-drupal>
-* Documentation YunoHost pour cette app : <https://yunohost.org/app_civicrm_drupal7>
+* YunoHost Store: <https://apps.yunohost.org/app/civicrm_drupal7>
 * Signaler un bug : <https://github.com/YunoHost-Apps/civicrm_drupal7_ynh/issues>
 
 ## Informations pour les développeurs

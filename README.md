@@ -19,7 +19,7 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 Open source constituent relationship management (CRM) for non-profits, NGOs and advocacy organizations.
 
 
-**Shipped version:** 5.65.1~ynh1
+**Shipped version:** 5.67.0~ynh1
 
 **Demo:** https://civicrm.org/demo
 
@@ -36,7 +36,7 @@ Open source constituent relationship management (CRM) for non-profits, NGOs and 
 * Official app website: <https://civicrm.org/>
 * Official admin documentation: <https://docs.civicrm.org/>
 * Upstream app code repository: <https://github.com/civicrm/civicrm-drupal>
-* YunoHost documentation for this app: <https://yunohost.org/app_civicrm_drupal7>
+* YunoHost Store: <https://apps.yunohost.org/app/civicrm_drupal7>
 * Report a bug: <https://github.com/YunoHost-Apps/civicrm_drupal7_ynh/issues>
 
 ## Developer info
