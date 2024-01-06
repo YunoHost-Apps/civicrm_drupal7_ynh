@@ -6,7 +6,7 @@
         "en": "CRM for non-profits, NGOs and advocacy organizations",
         "fr": "CRM pour organisations à but non lucratif et ONG"
     },
-    "version": "5.65.1~ynh1",
+    "version": "5.69.1~ynh1",
     "url": "https://civicrm.org",
     "upstream": {
         "license": "AGPL-3.0-or-later",
