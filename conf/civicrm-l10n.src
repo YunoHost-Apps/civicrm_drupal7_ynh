@@ -1,5 +1,5 @@
-SOURCE_URL=https://download.civicrm.org/civicrm-5.69.2-l10n.tar.gz
-SOURCE_SUM=09a8d496a1d092826ce9d24da5279da5a001cf84c892d1c6aaab6ac520457c21
+SOURCE_URL=https://download.civicrm.org/civicrm-5.69.3-l10n.tar.gz
+SOURCE_SUM=a5876288dda709bc1fa7c3e813d8b44d92bbdbc18ab48002869e775f782728f4
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
