@@ -19,7 +19,7 @@ Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) po
 Gestion des relations avec les constituants (GRC/CRM) pour les organisations à but non lucratif, les ONG et les organisations de défense des droits.
 
 
-**Version incluse :** 5.69.2~ynh1
+**Version incluse :** 5.69.4~ynh1
 
 **Démo :** https://civicrm.org/demo
 
