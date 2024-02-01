@@ -24,9 +24,7 @@ yunohost tools regen-conf mysql --force
 #=================================================
 ynh_script_progression --message="Upgrading source files..."
 
-#REMOVEME? 	ynh_secure_remove --file="$install_dir/$app/sites/all/modules/civicrm"
-mkdir -p "$install_dir/$app/sites/all/modules"
-ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
+ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal" --full_replace=1
 ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 
 chmod 750 "$install_dir"
