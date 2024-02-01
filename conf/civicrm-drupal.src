@@ -1,5 +1,5 @@
-SOURCE_URL=https://download.civicrm.org/civicrm-5.69.2-drupal.tar.gz
-SOURCE_SUM=3644adf3607cc10149adf0df3c5b3f63b2319f726a2c404617f069b4c5ff7014
+SOURCE_URL=https://download.civicrm.org/civicrm-5.69.4-drupal.tar.gz
+SOURCE_SUM=8eb452e132ac64a9f09e6151b5441e0c20682482e917586973432c8756f281b2
 SOURCE_SUM_PRG=sha256sum
 SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
