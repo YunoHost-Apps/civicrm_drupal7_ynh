@@ -10,108 +10,21 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# MANAGE SCRIPT FAILURE
+# INITIALIZE AND STORE SETTINGS
 #=================================================
-
-ynh_clean_setup () {
-	true
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
-# RETRIEVE ARGUMENTS FROM THE MANIFEST
-#=================================================
-
-domain=$YNH_APP_ARG_DOMAIN
-path_url=$YNH_APP_ARG_PATH
-is_public=$YNH_APP_ARG_IS_PUBLIC
-language=$YNH_APP_ARG_LANGUAGE
-admin=$YNH_APP_ARG_ADMIN
-password=$YNH_APP_ARG_PASSWORD
-install_profil=$YNH_APP_ARG_INSTALL_PROFIL
-
-app=$YNH_APP_INSTANCE_NAME
 
 admin_mail=$(ynh_user_get_info --username=$admin --key=mail)
-
-#=================================================
-# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
-#=================================================
-ynh_script_progression --message="Validating installation parameters..."
-
-final_path=/var/www/$app
-test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
-
-# Register (book) web path
-ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
-
-#=================================================
-# STORE SETTINGS FROM MANIFEST
-#=================================================
-ynh_script_progression --message="Storing installation settings..."
-
-ynh_app_setting_set --app=$app --key=domain --value=$domain
-ynh_app_setting_set --app=$app --key=path --value=$path_url
-ynh_app_setting_set --app=$app --key=language --value=$language
-ynh_app_setting_set --app=$app --key=admin --value=$admin
-ynh_app_setting_set --app=$app --key=install_profil --value=$install_profil
-
-#=================================================
-# STANDARD MODIFICATIONS
-#=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Installing dependencies..."
-
-ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Configuring system user..."
-
-# Create a system user
-ynh_system_user_create --username=$app --home_dir="$final_path"
-
-#=================================================
-# CREATE A MYSQL DATABASE
-#=================================================
-ynh_script_progression --message="Creating a MySQL database..."
-
-db_name=$(ynh_sanitize_dbid --db_name=$app)
-db_user=$db_name
-ynh_app_setting_set --app=$app --key=db_name --value=$db_name
-ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
 
 #=================================================
 # CREATE FINAL PATH
 #=================================================
 ynh_script_progression --message="Creating final path..."
 
-ynh_app_setting_set --app=$app --key=final_path --value=$final_path
-mkdir -p "$final_path/$app/sites/all/modules"
+mkdir -p "$install_dir/$app/sites/all/modules"
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
-
-#=================================================
-# PHP-FPM CONFIGURATION
-#=================================================
-ynh_script_progression --message="Configuring PHP-FPM..."
-
-# Create a dedicated PHP-FPM config
-ynh_add_fpm_config
-phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
-
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Configuring NGINX web server..."
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R "$app:www-data" "$install_dir"
 
 #=================================================
 # SPECIFIC SETUP
@@ -120,96 +33,79 @@ ynh_add_nginx_config
 #=================================================
 ynh_script_progression --message="Creating Drush alias..."
 
-mkdir -p "$final_path/.drush"
+mkdir -p "$install_dir/.drush"
 
-ynh_add_config --template="../conf/yoursite.aliases.drushrc.php" --destination="$final_path/.drush/$app.aliases.drushrc.php"
+ynh_add_config --template="yoursite.aliases.drushrc.php" --destination="$install_dir/.drush/$app.aliases.drushrc.php"
 
 #=================================================
 # INSTALL COMPOSER
 #=================================================
 ynh_script_progression --message="Installing Composer..."
 
-mkdir -p "$final_path/.composer"
+mkdir -p "$install_dir/.composer"
+ynh_add_config --template="composer.json" --destination="$install_dir/.composer/composer.json"
+ynh_install_composer --workdir="$install_dir/.composer"
 
-ynh_add_config --template="../conf/composer.json" --destination="$final_path/.composer/composer.json"
-
-ynh_install_composer --workdir="$final_path/.composer"
-
-export PATH="$final_path/.composer/vendor/bin:$PATH"
+export PATH="$install_dir/.composer/vendor/bin:$PATH"
 
 #=================================================
 # INSTALL DRUPAL AND CIVICRM
 #=================================================
 ynh_script_progression --message="Installing Drupal and CiviCRM..."
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R "$app:www-data" "$install_dir"
 
-update-alternatives --set php /usr/bin/php$phpversion
 
-pushd "$final_path"
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush pm-download -y drupal-7 --drupal-project-rename=$app
+pushd "$install_dir"
+    _ynh_exec_with_drush_php drush pm-download -y drupal-7 --drupal-project-rename="$app"
 
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app site-install $install_profil --account-name=$admin --account-pass=$password --account-mail=$admin_mail --db-url=mysql://$db_user:$db_pwd@localhost/$db_name --site-name="$app" --locale=$language --yes
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-download drush_language
-	#ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-download ldap
-	#ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-download l10n_update
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-enable -y l10n_update
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app language-add $language
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app language-default $language
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app cache-clear drush
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app l10n-update-refresh
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app l10n-update
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-update
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app core-cron
+    _ynh_exec_with_drush_php drush "@$app" site-install "$install_profil" \
+        --account-name="$admin" --account-pass="$password" --account-mail="$admin_mail" \
+        --db-url="mysql://$db_user:$db_pwd@localhost/$db_name" --site-name="$app" --locale="$language" --yes
+    _ynh_exec_with_drush_php drush "@$app" pm-download drush_language
+    # _ynh_exec_with_drush_php drush "@$app" pm-download ldap
+    # _ynh_exec_with_drush_php drush "@$app" pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
+    _ynh_exec_with_drush_php drush "@$app" pm-download l10n_update
+    _ynh_exec_with_drush_php drush "@$app" pm-enable -y l10n_update
+    _ynh_exec_with_drush_php drush "@$app" language-add "$language"
+    _ynh_exec_with_drush_php drush "@$app" language-default "$language"
+    _ynh_exec_with_drush_php drush "@$app" cache-clear drush
+    _ynh_exec_with_drush_php drush "@$app" l10n-update-refresh
+    _ynh_exec_with_drush_php drush "@$app" l10n-update
+    _ynh_exec_with_drush_php drush "@$app" pm-update
+    _ynh_exec_with_drush_php drush "@$app" core-cron
 
-	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
-	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
+    ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
+    ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 
-	touch "$final_path/$app/sites/default/civicrm.settings.php"
-	
-	chmod 750 "$final_path"
-	chmod -R o-rwx "$final_path"
-	chown -R $app:www-data "$final_path"
+    touch "$install_dir/$app/sites/default/civicrm.settings.php"
 
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app civicrm-install --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path_url" --ssl=on
+    chmod 750 "$install_dir"
+    chmod -R o-rwx "$install_dir"
+    chown -R "$app:www-data" "$install_dir"
+
+    _ynh_exec_with_drush_php drush --include="$install_dir/$app/sites/all/modules/civicrm/drupal/drush" "@$app" civicrm-install \
+        --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path" --ssl=on
 popd
 
-# update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
-
-ynh_store_file_checksum --file="$final_path/$app/sites/default/settings.php"
-ynh_store_file_checksum --file="$final_path/$app/sites/default/civicrm.settings.php"
+ynh_store_file_checksum --file="$install_dir/$app/sites/default/settings.php"
+ynh_store_file_checksum --file="$install_dir/$app/sites/default/civicrm.settings.php"
 
 #=================================================
-# SETUP THE CRON FILE
+# SYSTEM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Setuping the cron file..."
+ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
 
-ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
+# Create a dedicated PHP-FPM config
+ynh_add_fpm_config
 
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SETUP SSOWAT
-#=================================================
-ynh_script_progression --message="Configuring permissions..."
+# Create a dedicated NGINX config
+ynh_add_nginx_config
 
-# Make app public if necessary
-if [ $is_public -eq 1 ]
-then
-	# Everyone can access the app.
-	# The "main" permission is automatically created before the install script.
-	ynh_permission_update --permission="main" --add="visitors"
-fi
-
-#=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading NGINX web server..."
-
-ynh_systemd_action --service_name=nginx --action=reload
+# Create a Cron job
+ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # END OF SCRIPT

@@ -1,7 +1,0 @@
-SOURCE_URL=https://download.civicrm.org/civicrm-5.69.4-l10n.tar.gz
-SOURCE_SUM=84b537da5b8d0b54f254bc2c456ce472568ccf2aff9f3017346e9570b2efdaf9
-SOURCE_SUM_PRG=sha256sum
-SOURCE_FORMAT=tar.gz
-SOURCE_IN_SUBDIR=true
-SOURCE_FILENAME=
-SOURCE_EXTRACT=true

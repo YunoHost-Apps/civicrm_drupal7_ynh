@@ -10,169 +10,83 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# LOAD SETTINGS
-#=================================================
-ynh_script_progression --message="Loading installation settings..."
-
-app=$YNH_APP_INSTANCE_NAME
-
-domain=$(ynh_app_setting_get --app=$app --key=domain)
-path_url=$(ynh_app_setting_get --app=$app --key=path)
-language=$(ynh_app_setting_get --app=$app --key=language)
-admin=$(ynh_app_setting_get --app=$app --key=admin)
-final_path=$(ynh_app_setting_get --app=$app --key=final_path)
-db_name=$(ynh_app_setting_get --app=$app --key=db_name)
-phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
-
-#=================================================
-# CHECK VERSION
-#=================================================
-ynh_script_progression --message="Checking version..."
-
-upgrade_type=$(ynh_check_app_version_changed)
-
-#=================================================
-# BACKUP BEFORE UPGRADE THEN ACTIVE TRAP
-#=================================================
-ynh_script_progression --message="Backing up the app before upgrading (may take a while)..."
-
-# Backup the current version of the app
-ynh_backup_before_upgrade
-ynh_clean_setup () {
-	# Restore it if the upgrade fails
-	ynh_restore_upgradebackup
-}
-# Exit if an error occurs during the execution of the script
-ynh_abort_if_errors
-
-#=================================================
 # STANDARD UPGRADE STEPS
 #=================================================
 # ENSURE DOWNWARD COMPATIBILITY
 #=================================================
 ynh_script_progression --message="Ensuring downward compatibility..."
 
-# Cleaning legacy permissions
-if ynh_legacy_permissions_exists; then
-	ynh_legacy_permissions_delete_all
-
-	ynh_app_setting_delete --app=$app --key=is_public
-fi
-
 ynh_secure_remove --file="/usr/share/yunohost/hooks/conf_regen/34-mysql_$app"
 yunohost tools regen-conf mysql --force
 
 #=================================================
-# CREATE DEDICATED USER
-#=================================================
-ynh_script_progression --message="Making sure dedicated system user exists..."
-
-# Create a dedicated user (if not existing)
-ynh_system_user_create --username=$app --home_dir="$final_path"
-
-#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
+ynh_script_progression --message="Upgrading source files..."
 
-if [ "$upgrade_type" == "UPGRADE_APP" ]
-then
-	ynh_script_progression --message="Upgrading source files..."
+#REMOVEME? 	ynh_secure_remove --file="$install_dir/$app/sites/all/modules/civicrm"
+mkdir -p "$install_dir/$app/sites/all/modules"
+ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
+ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 
-	ynh_secure_remove --file="$final_path/$app/sites/all/modules/civicrm"
-	mkdir -p "$final_path/$app/sites/all/modules"
-	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal"
-	ynh_setup_source --dest_dir="$final_path/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
-fi
-
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
-
-#=================================================
-# UPGRADE DEPENDENCIES
-#=================================================
-ynh_script_progression --message="Upgrading dependencies..."
-
-ynh_install_app_dependencies $pkg_dependencies
-
-#=================================================
-# PHP-FPM CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading PHP-FPM configuration..."
-
-# Create a dedicated PHP-FPM config
-ynh_add_fpm_config
-
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Upgrading NGINX web server configuration..."
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
-
-#=================================================
-# SPECIFIC UPGRADE
-#=================================================
-# SETUP THE CRON FILE
-#=================================================
-ynh_script_progression --message="Setuping the cron file"
-
-ynh_add_config --template="../conf/cron" --destination="/etc/cron.d/$app"
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R "$app:www-data" "$install_dir"
 
 #=================================================
 # UPGRADE COMPOSER
 #=================================================
 ynh_script_progression --message="Upgrading Composer..."
 
-ynh_install_composer --workdir="$final_path/.composer"
+ynh_install_composer --workdir="$install_dir/.composer"
 
-export PATH="$final_path/.composer/vendor/bin:$PATH"
+export PATH="$install_dir/.composer/vendor/bin:$PATH"
 
 #=================================================
 # UPGRADE DRUPAL
 #=================================================
 ynh_script_progression --message="Upgrading Drupal..."
 
-ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/settings.php"
-ynh_backup_if_checksum_is_different --file="$final_path/$app/sites/default/civicrm.settings.php"
+ynh_backup_if_checksum_is_different --file="$install_dir/$app/sites/default/settings.php"
+ynh_backup_if_checksum_is_different --file="$install_dir/$app/sites/default/civicrm.settings.php"
 
-chmod 750 "$final_path"
-chmod -R o-rwx "$final_path"
-chown -R $app:www-data "$final_path"
+chmod 750 "$install_dir"
+chmod -R o-rwx "$install_dir"
+chown -R $app:www-data "$install_dir"
 
-update-alternatives --set php /usr/bin/php$phpversion
+pushd "$install_dir"
+    _ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 1
+    _ynh_exec_with_drush_php drush "@$app" cache-clear all
+    _ynh_exec_with_drush_php drush "@$app" pm-update -y drupal
+    _ynh_exec_with_drush_php drush "@$app" cache-clear all
+    _ynh_exec_with_drush_php drush "@$app" l10n-update-refresh
+    _ynh_exec_with_drush_php drush "@$app" l10n-update
 
-pushd "$final_path"
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 1 
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app pm-update -y drupal
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app cache-clear all 
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app l10n-update-refresh
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app l10n-update
+    _ynh_exec_with_drush_php drush --include="$install_dir/$app/sites/all/modules/civicrm/drupal/drush" "@$app" -y civicrm-upgrade-db
 
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush --include="$final_path/$app/sites/all/modules/civicrm/drupal/drush" @$app -y civicrm-upgrade-db
+    _ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 0
 
-	ynh_exec_warn_less ynh_exec_as $app env PATH=$PATH drush @$app variable-set --exact maintenance_mode 0
-
-	chmod 750 "$final_path"
-	chmod -R o-rwx "$final_path"
-	chown -R $app:www-data "$final_path"
+    chmod 750 "$install_dir"
+    chmod -R o-rwx "$install_dir"
+    chown -R "$app:www-data" "$install_dir"
 popd
 
-# update-alternatives --set php /usr/bin/php${YNH_DEFAULT_PHP_VERSION}
-
-ynh_store_file_checksum --file="$final_path/$app/sites/default/settings.php"
-ynh_store_file_checksum --file="$final_path/$app/sites/default/civicrm.settings.php"
+ynh_store_file_checksum --file="$install_dir/$app/sites/default/settings.php"
+ynh_store_file_checksum --file="$install_dir/$app/sites/default/civicrm.settings.php"
 
 #=================================================
-# GENERIC FINALIZATION
+# REAPPLY SYSTEM CONFIGURATIONS
 #=================================================
-# RELOAD NGINX
-#=================================================
-ynh_script_progression --message="Reloading NGINX web server..."
+ynh_script_progression --message="Upgrading system configurations related to $app..." --weight=1
 
-ynh_systemd_action --service_name=nginx --action=reload
+# Create a dedicated PHP-FPM config
+ynh_add_fpm_config
+
+# Create a dedicated NGINX config
+ynh_add_nginx_config
+
+# Create a Cron job
+ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # END OF SCRIPT
