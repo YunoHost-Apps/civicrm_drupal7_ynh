@@ -93,6 +93,7 @@ ram.runtime = "50M"
         "php8.1-intl",
         "curl",
         "libzip-dev",
+        "mariadb-server",
     ]
 
     [resources.database]
