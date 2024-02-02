@@ -18,18 +18,16 @@ Si vous n’avez pas YunoHost, regardez [ici](https://yunohost.org/#/install) po
 
 Gestion des relations avec les constituants (GRC/CRM) pour les organisations à but non lucratif, les ONG et les organisations de défense des droits.
 
+Le module d'authentification LDAP n'est pas installé par défaut, mais peut être installé.
 
-**Version incluse :** 5.69.2~ynh1
+
+**Version incluse :** 5.69.4~ynh2
 
 **Démo :** https://civicrm.org/demo
 
 ## Captures d’écran
 
 ![Capture d’écran de CiviCRM on Drupal 7](./doc/screenshots/screenshot.png)
-
-## Avertissements / informations importantes
-
-* Le module d'authentification LDAP peut être installé
 
 ## Documentations et ressources
 
