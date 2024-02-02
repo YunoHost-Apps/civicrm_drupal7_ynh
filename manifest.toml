@@ -58,7 +58,7 @@ ram.runtime = "50M"
     [install.install_profil]
     ask.en = "Choose the Drupal 7 install profile to use"
     ask.fr = "Choisissez le profile d'installation de Drupal 7"
-    type = "string"
+    type = "select"
     choices = ["minimal", "standard"]
     default = "standard"
 
