@@ -18,18 +18,16 @@ If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/in
 
 Open source constituent relationship management (CRM) for non-profits, NGOs and advocacy organizations.
 
+The LDAP module is not installed by default, but can be installed.
 
-**Shipped version:** 5.69.2~ynh1
+
+**Shipped version:** 5.69.4~ynh2
 
 **Demo:** https://civicrm.org/demo
 
 ## Screenshots
 
 ![Screenshot of CiviCRM on Drupal 7](./doc/screenshots/screenshot.png)
-
-## Disclaimers / important information
-
-* LDAP module can be installed
 
 ## Documentation and resources
 
