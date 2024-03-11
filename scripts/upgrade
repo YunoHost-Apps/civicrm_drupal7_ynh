@@ -25,7 +25,7 @@ yunohost tools regen-conf mysql --force
 ynh_script_progression --message="Upgrading source files..."
 
 ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-drupal" --full_replace=1
-ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n"
+ynh_setup_source --dest_dir="$install_dir/$app/sites/all/modules/civicrm" --source_id="civicrm-l10n" --full_replace=1
 
 chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
