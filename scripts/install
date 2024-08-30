@@ -1,11 +1,5 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
@@ -18,46 +12,44 @@ admin_mail=$(ynh_user_get_info --username=$admin --key=mail)
 #=================================================
 # CREATE FINAL PATH
 #=================================================
-ynh_script_progression --message="Creating final path..."
+ynh_script_progression "Creating final path..."
 
 mkdir -p "$install_dir/$app/sites/all/modules"
 
-chmod 750 "$install_dir"
-chmod -R o-rwx "$install_dir"
-chown -R "$app:www-data" "$install_dir"
-
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 750 "$install_dir"
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R "$app:www-data" "$install_dir"
 #=================================================
 # SPECIFIC SETUP
 #=================================================
 # CREATE DRUSH ALIAS
 #=================================================
-ynh_script_progression --message="Creating Drush alias..."
+ynh_script_progression "Creating Drush alias..."
 
 mkdir -p "$install_dir/.drush"
 
-ynh_add_config --template="yoursite.aliases.drushrc.php" --destination="$install_dir/.drush/$app.aliases.drushrc.php"
+ynh_config_add --template="yoursite.aliases.drushrc.php" --destination="$install_dir/.drush/$app.aliases.drushrc.php"
 
 #=================================================
 # INSTALL COMPOSER
 #=================================================
-ynh_script_progression --message="Installing Composer..."
+ynh_script_progression "Installing Composer..."
 
 mkdir -p "$install_dir/.composer"
-ynh_add_config --template="composer.json" --destination="$install_dir/.composer/composer.json"
-ynh_install_composer --workdir="$install_dir/.composer"
+ynh_config_add --template="composer.json" --destination="$install_dir/.composer/composer.json"
+ynh_composer_install
+ynh_composer_exec install --no-dev  # FIXMEhelpers2.1 (replace with composer_workdir=... prior to calling this helper, default is $intall_dir) --workdir="$install_dir/.composer"
 
 export PATH="$install_dir/.composer/vendor/bin:$PATH"
 
 #=================================================
 # INSTALL DRUPAL AND CIVICRM
 #=================================================
-ynh_script_progression --message="Installing Drupal and CiviCRM..."
+ynh_script_progression "Installing Drupal and CiviCRM..."
 
-chmod 750 "$install_dir"
-chmod -R o-rwx "$install_dir"
-chown -R "$app:www-data" "$install_dir"
-
-
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 750 "$install_dir"
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
+#REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R "$app:www-data" "$install_dir"
 pushd "$install_dir"
     _ynh_exec_with_drush_php drush pm-download -y drupal-7 --drupal-project-rename="$app"
 
@@ -82,33 +74,32 @@ pushd "$install_dir"
 
     touch "$install_dir/$app/sites/default/civicrm.settings.php"
 
-    chmod 750 "$install_dir"
-    chmod -R o-rwx "$install_dir"
-    chown -R "$app:www-data" "$install_dir"
-
+    #REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod 750 "$install_dir"
+    #REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chmod -R o-rwx "$install_dir"
+    #REMOVEME? Assuming the install dir is setup using ynh_setup_source, the proper chmod/chowns are now already applied and it shouldn't be necessary to tweak perms | chown -R "$app:www-data" "$install_dir"
     _ynh_exec_with_drush_php drush --include="$install_dir/$app/sites/all/modules/civicrm/drupal/drush" "@$app" civicrm-install \
         --dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path" --ssl=on
 popd
 
-ynh_store_file_checksum --file="$install_dir/$app/sites/default/settings.php"
-ynh_store_file_checksum --file="$install_dir/$app/sites/default/civicrm.settings.php"
+ynh_store_file_checksum "$install_dir/$app/sites/default/settings.php"
+ynh_store_file_checksum "$install_dir/$app/sites/default/civicrm.settings.php"
 
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
-ynh_script_progression --message="Adding system configurations related to $app..." --weight=1
+ynh_script_progression "Adding system configurations related to $app..."
 
 # Create a dedicated PHP-FPM config
-ynh_add_fpm_config
+ynh_config_add_phpfpm
 
 # Create a dedicated NGINX config
-ynh_add_nginx_config
+ynh_config_add_nginx
 
 # Create a Cron job
-ynh_add_config --template="cron" --destination="/etc/cron.d/$app"
+ynh_config_add --template="cron" --destination="/etc/cron.d/$app"
 
 #=================================================
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Installation of $app completed"
+ynh_script_progression "Installation of $app completed"
