@@ -5,7 +5,7 @@ EZ editatu eskuz.
 
 # CiviCRM on Drupal 7 YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://dash.yunohost.org/appci/app/civicrm_drupal7) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)
+[![Integrazio maila](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)
 
 [![Instalatu CiviCRM on Drupal 7 YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=civicrm_drupal7)
 

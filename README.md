@@ -5,7 +5,7 @@ It shall NOT be edited by hand.
 
 # CiviCRM on Drupal 7 for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://dash.yunohost.org/appci/app/civicrm_drupal7) ![Working status](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)
+[![Integration level](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/) ![Working status](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)
 
 [![Install CiviCRM on Drupal 7 with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=civicrm_drupal7)
 

@@ -5,7 +5,7 @@
 
 # YunoHost 上的 CiviCRM on Drupal 7
 
-[![集成程度](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://dash.yunohost.org/appci/app/civicrm_drupal7) ![工作状态](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)
+[![集成程度](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)
 
 [![使用 YunoHost 安装 CiviCRM on Drupal 7](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=civicrm_drupal7)
 
