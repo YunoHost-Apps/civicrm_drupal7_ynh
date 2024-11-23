@@ -5,7 +5,9 @@ NON debe editarse manualmente.
 
 # CiviCRM on Drupal 7 para YunoHost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://dash.yunohost.org/appci/app/civicrm_drupal7) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)
+[![Nivel de integración](https://apps.yunohost.org/badge/integration/civicrm_drupal7)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/)
+![Estado de funcionamento](https://apps.yunohost.org/badge/state/civicrm_drupal7)
+![Estado de mantemento](https://apps.yunohost.org/badge/maintained/civicrm_drupal7)
 
 [![Instalar CiviCRM on Drupal 7 con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=civicrm_drupal7)
 
@@ -21,7 +23,7 @@ Open source constituent relationship management (CRM) for non-profits, NGOs and 
 The LDAP module is not installed by default, but can be installed.
 
 
-**Versión proporcionada:** 5.69.4~ynh2
+**Versión proporcionada:** 5.69.4~ynh3
 
 **Demo:** <https://civicrm.org/demo>
 
@@ -31,7 +33,7 @@ The LDAP module is not installed by default, but can be installed.
 
 ## Documentación e recursos
 
-- Web oficial da app: <https://civicrm.org/>
+- Web oficial da app: <https://civicrm.org>
 - Documentación oficial para admin: <https://docs.civicrm.org/>
 - Repositorio de orixe do código: <https://github.com/civicrm/civicrm-drupal>
 - Tenda YunoHost: <https://apps.yunohost.org/app/civicrm_drupal7>
