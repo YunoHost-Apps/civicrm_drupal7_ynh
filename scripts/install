@@ -70,6 +70,8 @@ pushd "$install_dir"
 	ynh_setup_source --dest_dir="$install_dir/web/sites/all/modules/civicrm" --source_id="civicrm-l10n"
 
 	touch "$install_dir/web/sites/default/civicrm.settings.php"
+	chmod 644 "$install_dir/web/sites/default/civicrm.settings.php"
+	chown "$app:www-data" "$install_dir/web/sites/default/civicrm.settings.php"
 
 	_ynh_exec_with_drush_php drush --include="$install_dir/web/sites/all/modules/civicrm/drupal/drush" "@$app" civicrm-install \
 		--dbhost="localhost" --dbname="$db_name" --dbpass="$db_pwd" --dbuser="$db_user" --destination="sites/all/modules" --site_url="$domain$path" --ssl=on
