@@ -7,13 +7,13 @@ name = "CiviCRM on Drupal 7"
 description.en = "CRM for non-profits, NGOs and advocacy organizations"
 description.fr = "CRM pour organisations à but non lucratif et ONG"
 
-version = "5.69.4~ynh2"
+version = "5.69.4~ynh3"
 
 maintainers = ["yalh76"]
 
 [upstream]
 license = "AGPL-3.0-or-later"
-website = "https://civicrm.org/"
+website = "https://civicrm.org"
 demo = "https://civicrm.org/demo"
 admindoc = "https://docs.civicrm.org/"
 code = "https://github.com/civicrm/civicrm-drupal"
@@ -21,12 +21,15 @@ cpe = "cpe:2.3:a:civicrm:civicrm"
 fund = "https://civicrm.org/civicrm/contribute/transact?reset=1&id=47"
 
 [integration]
-yunohost = ">= 11.2.18"
+yunohost = ">= 11.2.30"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
+
 ldap = false
+
 sso = false
+
 disk = "50M"
 ram.build = "50M"
 ram.runtime = "50M"
@@ -64,6 +67,7 @@ ram.runtime = "50M"
     default = "standard"
 
 [resources]
+
     [resources.sources]
     [resources.sources.civicrm-drupal]
     url = "https://download.civicrm.org/civicrm-5.69.4-drupal.tar.gz"
@@ -83,16 +87,16 @@ ram.runtime = "50M"
 
     [resources.apt]
     packages = [
-        "php8.1-fpm",
-        "php8.1-cli",
-        "php8.1-gd",
-        "php8.1-mysql",
-        "php8.1-xml",
-        "php8.1-ldap",
-        "php8.1-mbstring",
-        "php8.1-curl",
-        "php8.1-soap",
-        "php8.1-intl",
+        "php8.2-fpm",
+        "php8.2-cli",
+        "php8.2-gd",
+        "php8.2-mysql",
+        "php8.2-xml",
+        "php8.2-ldap",
+        "php8.2-mbstring",
+        "php8.2-curl",
+        "php8.2-soap",
+        "php8.2-intl",
         "curl",
         "libzip-dev",
         "mariadb-server",
