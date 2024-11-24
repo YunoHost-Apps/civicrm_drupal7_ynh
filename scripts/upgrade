@@ -48,6 +48,8 @@ ynh_script_progression "Upgrading Drupal..."
 ynh_backup_if_checksum_is_different "$install_dir/web/sites/default/settings.php"
 ynh_backup_if_checksum_is_different "$install_dir/web/sites/default/civicrm.settings.php"
 
+update-alternatives --set php /usr/bin/php$php_version
+
 pushd "$install_dir"
 	_ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 1
 	_ynh_exec_with_drush_php drush "@$app" cache-clear all

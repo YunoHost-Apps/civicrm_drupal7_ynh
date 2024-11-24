@@ -42,6 +42,8 @@ ynh_config_add --template="yoursite.aliases.drushrc.php" --destination="$install
 #=================================================
 ynh_script_progression "Installing Drupal and CiviCRM..."
 
+update-alternatives --set php /usr/bin/php$php_version
+
 pushd "$install_dir"
 	_ynh_exec_with_drush_php drush pm-download -y drupal-7 --drupal-project-rename=web
 
