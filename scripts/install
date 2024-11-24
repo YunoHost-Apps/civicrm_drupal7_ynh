@@ -45,7 +45,7 @@ ynh_script_progression "Installing Drupal and CiviCRM..."
 pushd "$install_dir"
 	_ynh_exec_with_drush_php drush pm-download -y drupal-7 --drupal-project-rename=web
 
-	_ynh_exec_with_drush_php drush "@$app" site-install $install_profil \
+	_ynh_exec_with_drush_php drush "@$app" site:install "$install_profil" \
 		--account-name="$admin" \
 		--account-pass="$password" \
 		--account-mail="$admin_mail" \
