@@ -18,6 +18,7 @@ ynh_app_setting_set_default --key=php_memory_limit --value=512M
 
 if [ -d "$install_dir/$app" ]; then
   mv "$install_dir/$app" "$install_dir/web"
+  ynh_replace --match="$install_dir/$app" --replace="$install_dir/web" --file="$install_dir/web/sites/default/civicrm.settings.php"
 fi
 
 #=================================================
@@ -59,9 +60,7 @@ pushd "$install_dir"
 	_ynh_exec_with_drush_php drush "@$app" l10n-update
 	ynh_setup_source --dest_dir="$install_dir/web/sites/all/modules/civicrm" --source_id="civicrm-drupal" --full_replace
 	ynh_setup_source --dest_dir="$install_dir/web/sites/all/modules/civicrm" --source_id="civicrm-l10n"
-
 	_ynh_exec_with_drush_php drush --include="$install_dir/web/sites/all/modules/civicrm/drupal/drush" "@$app" -y civicrm-upgrade-db
-
 	_ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 0
 popd
 
