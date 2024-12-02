@@ -5,7 +5,9 @@ Il NE doit PAS être modifié à la main.
 
 # CiviCRM on Drupal 7 pour YunoHost
 
-[![Niveau d’intégration](https://dash.yunohost.org/integration/civicrm_drupal7.svg)](https://dash.yunohost.org/appci/app/civicrm_drupal7) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/civicrm_drupal7.maintain.svg)
+[![Niveau d’intégration](https://apps.yunohost.org/badge/integration/civicrm_drupal7)](https://ci-apps.yunohost.org/ci/apps/civicrm_drupal7/)
+![Statut du fonctionnement](https://apps.yunohost.org/badge/state/civicrm_drupal7)
+![Statut de maintenance](https://apps.yunohost.org/badge/maintained/civicrm_drupal7)
 
 [![Installer CiviCRM on Drupal 7 avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=civicrm_drupal7)
 
@@ -21,7 +23,7 @@ Gestion des relations avec les constituants (GRC/CRM) pour les organisations à 
 Le module d'authentification LDAP n'est pas installé par défaut, mais peut être installé.
 
 
-**Version incluse :** 5.69.4~ynh2
+**Version incluse :** 5.69.4~ynh3
 
 **Démo :** <https://civicrm.org/demo>
 
@@ -31,7 +33,7 @@ Le module d'authentification LDAP n'est pas installé par défaut, mais peut êt
 
 ## Documentations et ressources
 
-- Site officiel de l’app : <https://civicrm.org/>
+- Site officiel de l’app : <https://civicrm.org>
 - Documentation officielle de l’admin : <https://docs.civicrm.org/>
 - Dépôt de code officiel de l’app : <https://github.com/civicrm/civicrm-drupal>
 - YunoHost Store : <https://apps.yunohost.org/app/civicrm_drupal7>

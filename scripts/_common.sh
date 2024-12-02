@@ -1,23 +1,14 @@
 #!/bin/bash
 
 #=================================================
-# COMMON VARIABLES
+# COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
-#=================================================
-# PERSONAL HELPERS
-#=================================================
+composer_version="2.8.3"
 
 _ynh_exec_with_drush_php() {
-    ynh_exec_warn_less ynh_exec_as "$app" \
-        env PATH="$PATH" DRUSH_PHP="/usr/bin/php$phpversion" \
+    ynh_hide_warnings ynh_exec_as_app \
+        env PATH="$install_dir/.composer/vendor/bin:$PATH" \
+        DRUSH_PHP="/usr/bin/php$php_version" \
         "$@"
 }
-
-#=================================================
-# EXPERIMENTAL HELPERS
-#=================================================
-
-#=================================================
-# FUTURE OFFICIAL HELPERS
-#=================================================
