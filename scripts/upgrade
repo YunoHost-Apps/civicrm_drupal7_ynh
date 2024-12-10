@@ -42,9 +42,9 @@ install -d -m 750 -o $app -g $app "$install_dir/.drush"
 ynh_config_add --template="yoursite.aliases.drushrc.php" --destination="$install_dir/.drush/$app.aliases.drushrc.php"
 
 #=================================================
-# UPGRADE DRUPAL
+# UPGRADE DRUPAL AND CIVICRM
 #=================================================
-ynh_script_progression "Upgrading Drupal..."
+ynh_script_progression "Upgrading Drupal and CiviCRM..."
 
 ynh_backup_if_checksum_is_different "$install_dir/web/sites/default/settings.php"
 ynh_backup_if_checksum_is_different "$install_dir/web/sites/default/civicrm.settings.php"
