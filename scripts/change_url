@@ -16,11 +16,13 @@ ynh_script_progression "Updating NGINX web server configuration..."
 ynh_config_change_url_nginx
 
 #=================================================
-# UPDATE DRUSH ALIAS
+# SPECIFIC MODIFICATIONS
 #=================================================
-ynh_script_progression "Updating Drush alias..."
 
 ynh_config_add --template="yoursite.aliases.drushrc.php" --destination="$install_dir/.drush/$app.aliases.drushrc.php"
+ynh_replace --match=$old_domain --replace=$new_domain --file="$install_dir/web/sites/default/settings.php"
+ynh_delete_file_checksum "$install_dir/$app/sites/default/settings.php"
+ynh_store_file_checksum "$install_dir/web/sites/default/settings.php"
 
 #=================================================
 # END OF SCRIPT
