@@ -55,6 +55,19 @@ pushd "$install_dir"
 		--site-name="$app" \
 		--locale="$language" \
 		--yes
+
+	echo "\$conf['trusted_host_patterns'] = ['^$domain\$'];" >> "$install_dir/web/sites/default/settings.php"
+
+	install -d -m 770 -o $app -g www-data "$install_dir/tmp"
+	ynh_config_add --template=".htaccess" --destination="$install_dir/tmp/.htaccess"
+	chmod 0444 "$install_dir/tmp/.htaccess"
+	echo "\$conf['file_temporary_path'] = '../tmp';" >> "$install_dir/web/sites/default/settings.php"
+
+	install -d -m 770 -o $app -g www-data "$install_dir/private"
+	ynh_config_add --template=".htaccess" --destination="$install_dir/private/.htaccess"
+	chmod 0444 "$install_dir/private/.htaccess"
+	echo "\$conf['file_private_path'] = '../private';" >> "$install_dir/web/sites/default/settings.php"
+
 	_ynh_exec_with_drush_php drush "@$app" pm-download drush_language
 	# _ynh_exec_with_drush_php drush "@$app" pm-download ldap
 	# _ynh_exec_with_drush_php drush "@$app" pm-enable -y ldap_servers ldap_user ldap_authentication ldap_authorization ldap_authorization_drupal_role
