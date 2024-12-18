@@ -7,7 +7,7 @@ name = "CiviCRM on Drupal 7"
 description.en = "CRM for non-profits, NGOs and advocacy organizations"
 description.fr = "CRM pour organisations à but non lucratif et ONG"
 
-version = "5.69.4~ynh4"
+version = "5.80.1~ynh1"
 
 maintainers = ["yalh76"]
 
@@ -70,12 +70,12 @@ ram.runtime = "128M"
 
     [resources.sources]
     [resources.sources.civicrm-drupal]
-    url = "https://download.civicrm.org/civicrm-5.69.4-drupal.tar.gz"
-    sha256 = "8eb452e132ac64a9f09e6151b5441e0c20682482e917586973432c8756f281b2"
+    url = "https://download.civicrm.org/civicrm-5.80.1-drupal.tar.gz"
+    sha256 = "72a5453210bb32e53fce2db8ae22c59fdce7cadc62bb2f61fb623b68d93e7ac0"
 
     [resources.sources.civicrm-l10n]
-    url = "https://download.civicrm.org/civicrm-5.69.4-l10n.tar.gz"
-    sha256 = "84b537da5b8d0b54f254bc2c456ce472568ccf2aff9f3017346e9570b2efdaf9"
+    url = "https://download.civicrm.org/civicrm-5.80.1-l10n.tar.gz"
+    sha256 = "504c5cef2cf3c38d87cdf7e01da1cbb3c2ff090ba4a75990fc76a4ad2448f20a"
 
     [resources.system_user]
 
