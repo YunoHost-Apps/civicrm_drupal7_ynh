@@ -59,7 +59,7 @@ install -d -m 750 -o $app -g $app $composer_workdir
 ynh_config_add --template="composer.json" --destination="$composer_workdir/composer.json"
 
 ynh_composer_install
-ynh_composer_exec install --no-dev
+ynh_composer_exec update --no-dev
 
 #=================================================
 # CREATE DRUSH ALIAS
@@ -88,7 +88,8 @@ pushd "$install_dir"
 	_ynh_exec_with_drush_php drush "@$app" l10n-update
 	ynh_setup_source --dest_dir="$install_dir/web/sites/all/modules/civicrm" --source_id="civicrm-drupal" --full_replace
 	ynh_setup_source --dest_dir="$install_dir/web/sites/all/modules/civicrm" --source_id="civicrm-l10n"
-	_ynh_exec_with_drush_php drush --include="$install_dir/web/sites/all/modules/civicrm/drupal/drush" "@$app" -y civicrm-upgrade-db
+	_ynh_exec_with_drush_php cv upgrade:db
+	_ynh_exec_with_drush_php cv flush
 	_ynh_exec_with_drush_php drush "@$app" variable-set --exact maintenance_mode 0
 popd
 
