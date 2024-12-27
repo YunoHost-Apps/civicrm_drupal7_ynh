@@ -1,5 +1,10 @@
 {
     "require": {
-        "drush/drush": "8.*"
+        "drush/drush": "8.*",
+        "civicrm/cli-tools": "*"
+    },
+    "config": {
+        "allow-plugins": true,
+        "sort-packages": true
     }
 }
